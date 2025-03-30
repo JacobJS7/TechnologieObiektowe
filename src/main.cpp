@@ -3,53 +3,71 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-static const int RXPin = 4, TXPin = 5;
 static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
-//SoftwareSerial gpsSerial(RXPin, TXPin);
 HardwareSerial gpsSerial(1);
+
+struct SensorReadoutStructure{
+  uint8_t hour;
+  uint8_t minute;
+  uint8_t second; 
+  uint8_t day;
+  uint8_t month;
+  uint16_t year;
+  float latitude;
+  float longitude;
+  float altitude;
+  float course;
+  float speed;
+  uint32_t satellites;
+  int32_t hdop;
+};
+
+SensorReadoutStructure SensorReadout;
+
+void PrintData(struct SensorReadoutStructure SensorReadout){
+  Serial.printf("%02d:%02d:%02d;", SensorReadout.hour, SensorReadout.minute, SensorReadout.second);
+  Serial.printf("%02d/%02d/%04d;", SensorReadout.day, SensorReadout.month, SensorReadout.year);
+  Serial.printf("%.6f;%.6f;%.2f;", SensorReadout.latitude, SensorReadout.longitude, SensorReadout.altitude);
+  Serial.printf("%.2f;%.2f;", SensorReadout.course, SensorReadout.speed);
+  Serial.printf("%d;%d", SensorReadout.satellites, SensorReadout.hdop);
+  Serial.printf("\n");
+}
 
 void setup(){
   Serial.begin(115200);
   Serial.println("Startujemy...");
-  //gpsSerial.begin(GPSBaud);
   gpsSerial.begin(GPSBaud, SERIAL_8N1, 20, 21);
   if(!gpsSerial){
 	  Serial.println("Blad inicjalizacji gps");
   }
 }
 
-
 void loop(){
-  
   while (gpsSerial.available() > 0){
     if(gps.encode(gpsSerial.read())){
       if (gps.location.isUpdated()){
         Serial.println("Time | Date | Latitude | Longitude | Altitude | Course | Speed | Satelites | HDOP");
         
-        String Time = String(gps.time.hour()+2) + ":" + String(gps.time.minute()) + ":" + String(gps.time.second());
+        SensorReadout.hour = gps.time.hour()+2;
+        SensorReadout.minute = gps.time.minute();
+        SensorReadout.second = gps.time.second();
+
+        SensorReadout.day = gps.date.day();
+        SensorReadout.month = gps.date.month();
+        SensorReadout.year = gps.date.year();
+
+        SensorReadout.latitude = gps.location.lat();
+        SensorReadout.longitude = gps.location.lng();
+        SensorReadout.altitude = gps.altitude.meters();
+
+        SensorReadout.course = gps.course.deg();
+        SensorReadout.speed = gps.speed.kmph();
         
-        Serial.print(Time); 
-        Serial.print(";"); 
-
-        String Date = String(gps.date.day()) + "/" + String(gps.date.month()) + "/" + String(gps.date.year());
-
-        Serial.print(Date);
-        Serial.print(";"); 
-
-        String LocationData = String(gps.location.lat(), 6) + ";" + String(gps.location.lng(), 6) + ";" + String(gps.altitude.meters());
-
-        Serial.print(LocationData);
-        Serial.print(";"); 
-
-        String CourseData = String(gps.course.deg()) + ";" + String(gps.speed.kmph());
-
-        Serial.print(CourseData); 
-        Serial.print(";"); 
-       
-        String GPSControlData = String(gps.satellites.value()) + ";" + String(gps.hdop.value());
-        Serial.print(GPSControlData); 
-        Serial.println(" ");
+        SensorReadout.satellites = gps.satellites.value();
+        SensorReadout.hdop = gps.hdop.value();
+        
+        PrintData(SensorReadout);
         
         delay(2000);
       }

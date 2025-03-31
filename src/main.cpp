@@ -2,10 +2,13 @@
 #include <HardwareSerial.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
+#include <SoftwareSerial.h>
 
 static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
-HardwareSerial gpsSerial(1);
+//HardwareSerial gpsSerial(1);
+SoftwareSerial gpsSerial(6, -1); //6->TX only
+SoftwareSerial openLogSerial(-2, 7); //RX only
 
 struct SensorReadoutStructure{
   uint8_t hour;
@@ -33,11 +36,20 @@ void PrintData(struct SensorReadoutStructure SensorReadout){
   Serial.printf("%d;%d", SensorReadout.satellites, SensorReadout.hdop);
   Serial.printf("\n");
 }
+void PrintDataToOpenLog(struct SensorReadoutStructure SensorReadout){
+  openLogSerial.printf("%02d:%02d:%02d;", SensorReadout.hour, SensorReadout.minute, SensorReadout.second);
+  openLogSerial.printf("%02d/%02d/%04d;", SensorReadout.day, SensorReadout.month, SensorReadout.year);
+  openLogSerial.printf("%.6f;%.6f;%.2f;", SensorReadout.latitude, SensorReadout.longitude, SensorReadout.altitude);
+  openLogSerial.printf("%.2f;%.2f;", SensorReadout.course, SensorReadout.speed);
+  openLogSerial.printf("%d;%d", SensorReadout.satellites, SensorReadout.hdop);
+  openLogSerial.printf("\n");
+}
 
 void setup(){
   Serial.begin(115200);
   Serial.println("Startujemy...");
-  gpsSerial.begin(GPSBaud, SERIAL_8N1, 20, 21);
+  gpsSerial.begin(GPSBaud);
+  openLogSerial.begin(9600);
   if(!gpsSerial){
 	  Serial.println("Blad inicjalizacji gps");
   }
@@ -68,6 +80,7 @@ void loop(){
         SensorReadout.hdop = gps.hdop.value();
         
         PrintData(SensorReadout);
+        PrintDataToOpenLog(SensorReadout);
         
         delay(2000);
       }

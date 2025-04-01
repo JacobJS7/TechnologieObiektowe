@@ -1,14 +1,10 @@
 #include <TinyGPS++.h>
-#include <HardwareSerial.h>
-#include <Adafruit_Sensor.h>
 #include <Wire.h>
 #include <SoftwareSerial.h>
 
-static const uint32_t GPSBaud = 9600;
 TinyGPSPlus gps;
-//HardwareSerial gpsSerial(1);
-SoftwareSerial gpsSerial(6, -1); //6->TX only
-SoftwareSerial openLogSerial(-2, 7); //RX only
+SoftwareSerial gpsSerial(6, -1); //6 -> TX only
+SoftwareSerial openLogSerial(-2, 7); //7 -> RX only
 
 struct SensorReadoutStructure{
   uint8_t hour;
@@ -48,7 +44,7 @@ void PrintDataToOpenLog(struct SensorReadoutStructure SensorReadout){
 void setup(){
   Serial.begin(115200);
   Serial.println("Startujemy...");
-  gpsSerial.begin(GPSBaud);
+  gpsSerial.begin(9600);
   openLogSerial.begin(9600);
   if(!gpsSerial){
 	  Serial.println("Blad inicjalizacji gps");

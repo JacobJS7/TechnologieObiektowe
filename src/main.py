@@ -7,6 +7,14 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 
+from file_leader import GPSLoader
+
+gps_loader = GPSLoader("gps.txt")
+gps_points = gps_loader.load_data()
+
+for point in gps_points:
+    print(f"Godzina: {point.time} Data: {point.date} Latitude: {point.latitude} Longitude: {point.longitude}")
+    print(f"Prędkość: {point.speed} km/h | Kurs: {point.course}° | Satelity: {point.satellites} | HDOP: {point.hdop}")
 
 
 class MapWidget(QWebEngineView):

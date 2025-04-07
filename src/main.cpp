@@ -2,9 +2,13 @@
 #include <Wire.h>
 #include <SoftwareSerial.h>
 
+#define Battery_Pin 4
+#define GPS_TX 6
+#define OpenLog_RX 7
+
 TinyGPSPlus gps;
-SoftwareSerial gpsSerial(6, -1); //6 -> TX only
-SoftwareSerial openLogSerial(-2, 7); //7 -> RX only
+SoftwareSerial gpsSerial(GPS_TX, -1); //6 -> TX only
+SoftwareSerial openLogSerial(-2, OpenLog_RX); //7 -> RX only
 
 struct SensorReadoutStructure{
   uint8_t hour;
@@ -46,6 +50,7 @@ void setup(){
   Serial.println("Startujemy...");
   gpsSerial.begin(9600);
   openLogSerial.begin(9600);
+  pinMode(Battery_Pin, INPUT_PULLUP);
   if(!gpsSerial){
 	  Serial.println("Blad inicjalizacji gps");
   }
@@ -77,6 +82,9 @@ void loop(){
         
         PrintData(SensorReadout);
         PrintDataToOpenLog(SensorReadout);
+
+        uint16_t batteryvoltage = analogReadMilliVolts(Battery_Pin);
+        Serial.printf("voltage = %04d V",batteryvoltage);
         
         delay(2000);
       }

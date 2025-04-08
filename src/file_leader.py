@@ -54,7 +54,7 @@ class GPSLoader:
                         )
                         points.append(point)
                     except ValueError:
-                        print(f"Błąd parsowania linii: {line}")
+                        print(f"Blad parsowania linii: {line}")
         except Exception as e:
             print(f"Błąd podczas otwierania pliku: {e}")
 

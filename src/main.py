@@ -63,7 +63,6 @@ class MainWindow(QMainWindow):
             print(f"Wczytano {len(points)} punktów.")
             self.statusBar().showMessage("Zaimportowano wszystkie punkty")
                 # Dodac waypointy do mapy tutaj
-                # Dodac waypointy do mapy tutaj
             for point in points:
                 print(f"Godzina: {point.time} Data: {point.date} Latitude: {point.latitude} Longitude: {point.longitude}")
                 print(f"Prędkość: {point.speed} km/h | Kurs: {point.course}° | Satelity: {point.satellites} | HDOP: {point.hdop}")

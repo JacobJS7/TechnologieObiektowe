@@ -1,50 +1,15 @@
 import sys
-
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QDockWidget, QTableWidget, QTableWidgetItem, QWidget, QVBoxLayout, QTextEdit, QListWidget
+    QApplication, QMainWindow, QDockWidget, QTableWidget, QTableWidgetItem, QWidget, QVBoxLayout, QTextEdit,
+    QListWidget, QAction
 )
 from PyQt5.QtCore import Qt
+from PyQt5.uic.properties import QtWidgets
 
+from map_widget import MapWidget
 from file_leader import GPSLoader
-
-gps_loader = GPSLoader("gps.txt")
-gps_points = gps_loader.load_data()
-
-for point in gps_points:
-    print(f"Godzina: {point.time} Data: {point.date} Latitude: {point.latitude} Longitude: {point.longitude}")
-    print(f"Prędkość: {point.speed} km/h | Kurs: {point.course}° | Satelity: {point.satellites} | HDOP: {point.hdop}")
-
-
-class MapWidget(QWebEngineView):
-    def __init__(self):
-        super().__init__()
-        self.load_map()
-
-    def load_map(self):
-        map_html = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Mapa</title>
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-        </head>
-        <body style="margin:0">
-            <div id="mapid" style="width: 100%; height: 100vh;"></div>
-            <script>
-                var map = L.map('mapid').setView([52.2298, 21.0122], 12);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-            </script>
-        </body>
-        </html>
-        """
-        self.setHtml(map_html)
 
 
 class MainWindow(QMainWindow):
@@ -53,20 +18,55 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Py Road")
         self.setGeometry(100, 100, 1200, 800)
+        self.setup_menu()
+        self.statusBar().showMessage("Program gotowy")
 
-        # mapa
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
-        self.map_widget = MapWidget()
+        map_widget = MapWidget()
+        map_widget.load_map()
 
         layout = QVBoxLayout()
-        layout.addWidget(self.map_widget)
+        layout.addWidget(map_widget)
         central_widget.setLayout(layout)
 
         self.add_list_dock_widget("Lista punktów", ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"], "left")
         self.add_dock_widget("Dane GPS", "Pozycja: 52.2298 N, 21.0122 E", "bottom")
         self.add_table_dock_widget("Napięcie baterii", [["12v", "3a"]], ["Napiecie", "Amper"], "bottom")
+
+    def setup_menu(self):
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu("Plik")
+        import_action = QAction("Importuj", self)
+        import_action.setObjectName("importAction")
+        import_action.triggered.connect(self.import_data)
+        export_action = QAction("Eksportuj", self)
+        export_action.setObjectName("exportAction")
+        file_menu.addAction(import_action)
+        file_menu.addAction(export_action)
+
+        plot_menu = menubar.addMenu("Wykresy")
+        speed_plot_action = QAction("Wykres prędkości", self)
+        altitude_plot_action = QAction("Wykres wysokości npm", self)
+        HDOP_plot_action = QAction("Wykres dokładności HDOP", self)
+        satelite_count_action = QAction("Wykres ilości satelit", self)
+        plot_menu.addAction(speed_plot_action)
+        plot_menu.addAction(altitude_plot_action)
+        plot_menu.addAction(HDOP_plot_action)
+        plot_menu.addAction(satelite_count_action)
+
+    def import_data(self):
+        loader = GPSLoader()
+        if loader.choose_file(self):
+            points = loader.load_data()
+            print(f"Wczytano {len(points)} punktów.")
+            self.statusBar().showMessage("Zaimportowano wszystkie punkty")
+                # Dodac waypointy do mapy tutaj
+                # Dodac waypointy do mapy tutaj
+            for point in points:
+                print(f"Godzina: {point.time} Data: {point.date} Latitude: {point.latitude} Longitude: {point.longitude}")
+                print(f"Prędkość: {point.speed} km/h | Kurs: {point.course}° | Satelity: {point.satellites} | HDOP: {point.hdop}")
 
     def add_list_dock_widget(self, title, pointslist, position):
         dock = QDockWidget(title, self)

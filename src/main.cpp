@@ -12,25 +12,8 @@ TinyGPSPlus gps;
 SoftwareSerial gpsSerial(GPS_TX, -1); //6 -> TX only
 SoftwareSerial openLogSerial(-2, OpenLog_RX); //7 -> RX only
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 9, /* data=*/ 8);
-
-struct SensorReadoutStructure{
-  uint8_t hour;
-  uint8_t minute;
-  uint8_t second; 
-  uint8_t day;
-  uint8_t month;
-  uint16_t year;
-  float latitude;
-  float longitude;
-  float altitude;
-  float course;
-  float speed;
-  uint32_t satellites;
-  int32_t hdop;
-  uint16_t voltage;
-};
-
 SensorReadoutStructure SensorReadout;
+
 
 void PrintData(struct SensorReadoutStructure SensorReadout){
   Serial.printf("%02d:%02d:%02d;", SensorReadout.hour, SensorReadout.minute, SensorReadout.second);
@@ -70,6 +53,9 @@ void setup(){
 }
 
 void loop(){
+  if(gpsSerial.available() <= 0){
+    displayAlert(u8g2);
+  }
   while (gpsSerial.available() > 0){
     if(gps.encode(gpsSerial.read())){
       if (gps.location.isUpdated()){
@@ -97,7 +83,7 @@ void loop(){
         
         PrintData(SensorReadout);
         PrintDataToOpenLog(SensorReadout);
-        drawssd(u8g2);
+        displayAllInfo(u8g2, SensorReadout);
         
         delay(2000);
       }

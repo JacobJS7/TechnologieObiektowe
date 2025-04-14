@@ -31,9 +31,8 @@ class MainWindow(QMainWindow):
         layout.addWidget(map_widget)
         central_widget.setLayout(layout)
 
-        self.add_list_dock_widget("Lista punktów", ["Punkt 1", "Punkt 2", "Punkt 3", "Punkt 4"], "left")
-        self.add_dock_widget("Dane GPS", "Pozycja: 52.2298 N, 21.0122 E", "bottom")
-        self.add_table_dock_widget("Napięcie baterii", [["12v", "3a"]], ["Napiecie", "Amper"], "bottom")
+        self.add_list_dock_widget(["Zaimportuj dane"])
+        self.add_list_point_info(["Zaimportuj dane"])
 
     def setup_menu(self):
         menubar = self.menuBar()
@@ -49,46 +48,70 @@ class MainWindow(QMainWindow):
         plot_menu = menubar.addMenu("Wykresy")
         speed_plot_action = QAction("Wykres prędkości", self)
         altitude_plot_action = QAction("Wykres wysokości npm", self)
-        HDOP_plot_action = QAction("Wykres dokładności HDOP", self)
+        hdop_plot_action = QAction("Wykres dokładności HDOP", self)
         satelite_count_action = QAction("Wykres ilości satelit", self)
+        battery_voltage_action = QAction("Wykres napięcia baterii", self)
         plot_menu.addAction(speed_plot_action)
         plot_menu.addAction(altitude_plot_action)
-        plot_menu.addAction(HDOP_plot_action)
+        plot_menu.addAction(hdop_plot_action)
         plot_menu.addAction(satelite_count_action)
+        plot_menu.addAction(battery_voltage_action)
 
     def import_data(self):
         loader = GPSLoader()
         if loader.choose_file(self):
-            points = loader.load_data()
-            print(f"Wczytano {len(points)} punktów.")
+            self.points = loader.load_data()  # Zapisujemy punkty w instancji klasy
+            print(f"Wczytano {len(self.points)} punktów.")
             self.statusBar().showMessage("Zaimportowano wszystkie punkty")
-                # Dodac waypointy do mapy tutaj
-            for point in points:
-                print(f"Godzina: {point.time} Data: {point.date} Latitude: {point.latitude} Longitude: {point.longitude}")
-                print(f"Prędkość: {point.speed} km/h | Kurs: {point.course}° | Satelity: {point.satellites} | HDOP: {point.hdop}")
 
-    def add_list_dock_widget(self, title, pointslist, position):
-        dock = QDockWidget(title, self)
-        dock.setAllowedAreas(
-            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea
-        )
+            pointslist = [f"Punkt {i + 1}" for i in range(len(self.points))]
 
-        list = QListWidget()
-        list.addItems(pointslist)
-        dock.setWidget(list)
-        self.addDockWidget(getattr(Qt, f"{position.capitalize()}DockWidgetArea"), dock)
+            if hasattr(self, "point_list_widget"):
+                self.point_list_widget.clear()
+                self.point_list_widget.addItems(pointslist)
+            else:
+                self.add_list_dock_widget(pointslist)
 
-    def add_dock_widget(self, title, default_text, position):
-        dock = QDockWidget(title, self)
-        dock.setAllowedAreas(
-            Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea
-        )
+            self.point_list_widget.itemClicked.connect(self.display_point_info)
 
-        text_edit = QTextEdit()
-        text_edit.setText(default_text)
-        text_edit.setReadOnly(True)
-        dock.setWidget(text_edit)
-        self.addDockWidget(getattr(Qt, f"{position.capitalize()}DockWidgetArea"), dock)
+    def add_list_dock_widget(self, pointslist):
+        dock = QDockWidget("Lista punktów", self)
+        self.point_list_widget = QListWidget()
+        self.point_list_widget.addItems(pointslist)
+        dock.setWidget(self.point_list_widget)
+        self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+
+    def add_list_point_info(self, point_info):
+        dock = QDockWidget("Szczegóły punktów", self)
+        self.point_info_widget = QListWidget()
+        self.point_info_widget.addItems(point_info)
+        dock.setWidget(self.point_info_widget)
+        self.addDockWidget(Qt.BottomDockWidgetArea, dock)
+
+    def display_point_info(self, item):
+        punkt_nazwa = item.text()  # np. "Punkt 3"
+        print(f"Kliknięto: {punkt_nazwa}")
+        itemindex = self.point_list_widget.row(item)
+
+        if itemindex < 0 or itemindex >= len(self.points):
+            print("Nieprawidłowy indeks punktu")
+            return
+
+        point = self.points[itemindex]
+
+        self.point_info_widget.clear()
+        self.point_info_widget.addItems([
+            f"Czas: {point.time}",
+            f"Data: {point.date}",
+            f"Szerokość: {point.latitude}",
+            f"Długość: {point.longitude}",
+            f"Wysokość: {point.altitude} m",
+            f"Kurs: {point.course}°",
+            f"Prędkość: {point.speed} km/h",
+            f"Satelity: {point.satellites}",
+            f"HDOP: {point.hdop}",
+            f"Voltage: {point.voltage} mV"
+        ])
 
     def add_table_dock_widget(self, title, data, headers, position):
         dock = QDockWidget(title, self)

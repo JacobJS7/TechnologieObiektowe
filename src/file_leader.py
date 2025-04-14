@@ -13,6 +13,7 @@ class GPSPoint:
     speed: float
     satellites: int
     hdop: int
+    voltage: int
 
 
 class GPSLoader:
@@ -37,7 +38,7 @@ class GPSLoader:
             with open(self.filename, "r", encoding="utf-8") as file:
                 for line in file:
                     row = line.strip().split(";")
-                    if len(row) != 9:
+                    if len(row) != 10:
                         print(f"Niepoprawny format linii: {line}")
                         continue
                     try:
@@ -50,7 +51,8 @@ class GPSLoader:
                             course=float(row[5]),
                             speed=float(row[6]),
                             satellites=int(row[7]),
-                            hdop=int(row[8])
+                            hdop=int(row[8]),
+                            voltage=int(row[9])
                         )
                         points.append(point)
                     except ValueError:

@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 from PyQt5.uic.properties import QtWidgets
-
 from map_widget import MapWidget
 from file_leader import GPSLoader
 
@@ -24,11 +23,11 @@ class MainWindow(QMainWindow):
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
 
-        map_widget = MapWidget()
-        map_widget.load_map()
+        self.map_widget = MapWidget()
+        self.map_widget.load_map()
 
         layout = QVBoxLayout()
-        layout.addWidget(map_widget)
+        layout.addWidget(self.map_widget)
         central_widget.setLayout(layout)
 
         self.add_list_dock_widget(["Zaimportuj dane"])
@@ -60,17 +59,18 @@ class MainWindow(QMainWindow):
     def import_data(self):
         loader = GPSLoader()
         if loader.choose_file(self):
-            self.points = loader.load_data()  # Zapisujemy punkty w instancji klasy
+            self.points = loader.load_data()
             print(f"Wczytano {len(self.points)} punktów.")
             self.statusBar().showMessage("Zaimportowano wszystkie punkty")
 
             pointslist = [f"Punkt {i + 1}" for i in range(len(self.points))]
-
             if hasattr(self, "point_list_widget"):
                 self.point_list_widget.clear()
                 self.point_list_widget.addItems(pointslist)
             else:
                 self.add_list_dock_widget(pointslist)
+
+            self.map_widget.load_points(self.points)
 
             self.point_list_widget.itemClicked.connect(self.display_point_info)
 

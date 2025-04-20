@@ -32,9 +32,11 @@ class MapWidget(QWebEngineView):
 
     def load_points(self, points):
         markers_js = ""
+        i=1;
         for p in points:
-            popup = f"Godzina: {p.time}<br>Data: {p.date}<br>Prędkość: {p.speed} km/h"
+            popup = f"Punkt {i} <br>Godzina: {p.time}<br>Data: {p.date}<br>Prędkość: {p.speed} km/h"
             markers_js += f"L.marker([{p.latitude}, {p.longitude}]).addTo(map).bindPopup('{popup}');\n"
+            i+=1
 
         html = f"""
            <!DOCTYPE html>

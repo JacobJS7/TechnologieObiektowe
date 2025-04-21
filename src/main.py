@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.uic.properties import QtWidgets
 from map_widget import MapWidget
 from file_leader import GPSLoader
+from plot_generator import Plotter
 
 
 class MainWindow(QMainWindow):
@@ -46,10 +47,20 @@ class MainWindow(QMainWindow):
 
         plot_menu = menubar.addMenu("Wykresy")
         speed_plot_action = QAction("Wykres prędkości", self)
+        speed_plot_action.triggered.connect(self.show_speed_plot)
+
         altitude_plot_action = QAction("Wykres wysokości npm", self)
+        altitude_plot_action.triggered.connect(self.show_altitude_plot)
+
         hdop_plot_action = QAction("Wykres dokładności HDOP", self)
+        hdop_plot_action.triggered.connect(self.show_hdop_plot)
+
         satelite_count_action = QAction("Wykres ilości satelit", self)
+        satelite_count_action.triggered.connect(self.show_voltage_plot)
+
         battery_voltage_action = QAction("Wykres napięcia baterii", self)
+        battery_voltage_action.triggered.connect(self.show_voltage_plot)
+
         plot_menu.addAction(speed_plot_action)
         plot_menu.addAction(altitude_plot_action)
         plot_menu.addAction(hdop_plot_action)
@@ -89,7 +100,7 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, dock)
 
     def display_point_info(self, item):
-        punkt_nazwa = item.text()  # np. "Punkt 3"
+        punkt_nazwa = item.text()
         print(f"Kliknięto: {punkt_nazwa}")
         itemindex = self.point_list_widget.row(item)
 
@@ -105,12 +116,12 @@ class MainWindow(QMainWindow):
             f"Data: {point.date}",
             f"Szerokość: {point.latitude}",
             f"Długość: {point.longitude}",
-            f"Wysokość: {point.altitude} m",
+            f"Wysokość: {point.altitude} m npm",
             f"Kurs: {point.course}°",
             f"Prędkość: {point.speed} km/h",
-            f"Satelity: {point.satellites}",
-            f"HDOP: {point.hdop}",
-            f"Voltage: {point.voltage} mV"
+            f"Liczba Połączonych Satelit: {point.satellites}",
+            f"Wskaźnik HDOP: {point.hdop}",
+            f"Napięcie baterii: {point.voltage} mV"
         ])
 
     def add_table_dock_widget(self, title, data, headers, position):
@@ -132,6 +143,29 @@ class MainWindow(QMainWindow):
         dock.setWidget(table)
         self.addDockWidget(getattr(Qt, f"{position.capitalize()}DockWidgetArea"), dock)
 
+    def show_speed_plot(self):
+        if not hasattr(self, 'points') or not self.points:
+            return
+        plotter = Plotter(self.points)
+        plotter.plot_speed()
+
+    def show_altitude_plot(self):
+        if not hasattr(self, 'points') or not self.points:
+            return
+        plotter = Plotter(self.points)
+        plotter.plot_altitude()
+
+    def show_hdop_plot(self):
+        if not hasattr(self, 'points') or not self.points:
+            return
+        plotter = Plotter(self.points)
+        plotter.plot_hdop()
+
+    def show_voltage_plot(self):
+        if not hasattr(self, 'points') or not self.points:
+            return
+        plotter = Plotter(self.points)
+        plotter.plot_voltage()
 
 if __name__ == "__main__":
     from PyQt5.QtCore import Qt

@@ -32,11 +32,15 @@ class MapWidget(QWebEngineView):
 
     def load_points(self, points):
         markers_js = ""
-        i=1;
+        path_coords = []  #wspolrzedne laczenia
+        i = 1
         for p in points:
             popup = f"Punkt {i} <br>Godzina: {p.time}<br>Data: {p.date}<br>Prędkość: {p.speed} km/h"
             markers_js += f"L.marker([{p.latitude}, {p.longitude}]).addTo(map).bindPopup('{popup}');\n"
-            i+=1
+            path_coords.append(f"[{p.latitude}, {p.longitude}]")
+            i += 1
+
+        polyline_js = f"L.polyline([{', '.join(path_coords)}], {{color: 'orange'}}).addTo(map);"
 
         html = f"""
            <!DOCTYPE html>
@@ -56,6 +60,7 @@ class MapWidget(QWebEngineView):
                        attribution: '© OpenStreetMap contributors'
                    }}).addTo(map);
                    {markers_js}
+                   {polyline_js}
                </script>
            </body>
            </html>

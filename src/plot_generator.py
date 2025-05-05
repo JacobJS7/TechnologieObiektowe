@@ -52,3 +52,15 @@ class Plotter:
         plt.ylabel("Napięcie (mV)")
         plt.grid(True)
         plt.show()
+
+    def plot_satelite(self):
+        satelite_data = [p.satellites for p in self.points]
+        x = list(range(1, len(satelite_data) + 1))
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(x, satelite_data, linestyle='-', color='green')
+        plt.title("Wykres ilości satelit")
+        plt.xlabel("Numer punktu")
+        plt.ylabel("Ilość satelit")
+        plt.grid(True)
+        plt.show()

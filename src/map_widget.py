@@ -32,7 +32,7 @@ class MapWidget(QWebEngineView):
 
     def load_points(self, points):
         markers_js = ""
-        path_coords = []  #wspolrzedne laczenia
+        path_coords = []  #wspolrzedne laczenia zbiorowe INTERWAŁ można na podstawie prędkości dać automatyczny w urządzeniu
         i = 1
         for p in points:
             popup = f"Punkt {i} <br>Godzina: {p.time}<br>Data: {p.date}<br>Prędkość: {p.speed} km/h"
@@ -40,7 +40,7 @@ class MapWidget(QWebEngineView):
             path_coords.append(f"[{p.latitude}, {p.longitude}]")
             i += 1
 
-        polyline_js = f"L.polyline([{', '.join(path_coords)}], {{color: 'orange'}}).addTo(map);"
+        polyline_js = f"L.polyline([{', '.join(path_coords)}], {{color: 'lime'}}).addTo(map);"
 
         html = f"""
            <!DOCTYPE html>

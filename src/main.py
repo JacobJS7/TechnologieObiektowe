@@ -31,8 +31,8 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.map_widget)
         central_widget.setLayout(layout)
 
-        self.add_list_dock_widget(["Zaimportuj dane"])
-        self.add_list_point_info(["Zaimportuj dane"])
+        self.add_list_dock_widget(["Zaimportuj najpierw dane"])
+        self.add_list_point_info(["Zaimportuj najpierw dane"])
 
     def setup_menu(self):
         menubar = self.menuBar()
@@ -56,7 +56,7 @@ class MainWindow(QMainWindow):
         hdop_plot_action.triggered.connect(self.show_hdop_plot)
 
         satelite_count_action = QAction("Wykres ilości satelit", self)
-        satelite_count_action.triggered.connect(self.show_voltage_plot)
+        satelite_count_action.triggered.connect(self.show_satelite_plot)
 
         battery_voltage_action = QAction("Wykres napięcia baterii", self)
         battery_voltage_action.triggered.connect(self.show_voltage_plot)
@@ -80,9 +80,7 @@ class MainWindow(QMainWindow):
                 self.point_list_widget.addItems(pointslist)
             else:
                 self.add_list_dock_widget(pointslist)
-
             self.map_widget.load_points(self.points)
-
             self.point_list_widget.itemClicked.connect(self.display_point_info)
 
     def add_list_dock_widget(self, pointslist):
@@ -166,6 +164,12 @@ class MainWindow(QMainWindow):
             return
         plotter = Plotter(self.points)
         plotter.plot_voltage()
+
+    def show_satelite_plot(self):
+        if not hasattr(self, 'points') or not self.points:
+            return
+        plotter = Plotter(self.points)
+        plotter.plot_satelite()
 
 if __name__ == "__main__":
     from PyQt5.QtCore import Qt

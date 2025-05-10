@@ -92,3 +92,24 @@ void displayAlert(U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2){
     
     u8g2.sendBuffer();
 }
+
+void displayIntervalSelection(U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2, uint8_t selectedOption) {
+  u8g2.clearBuffer();
+  u8g2.setFont(u8g2_font_6x12_tr);
+  
+  u8g2.drawStr(5, 10, "Wybierz interwal:");
+  u8g2.drawFrame(0, 0, 128, 64);
+  
+  const char* options[4] = {"5 sekund", "15 sekund", "30 sekund", "60 sekund"};
+  
+  for (int i = 0; i < 4; i++) {
+    if (i == selectedOption) {
+      u8g2.drawFrame(10, 20 + i*10, 108, 11);
+    }
+    u8g2.drawStr(15, 28 + i*10, options[i]);
+  }
+  
+  u8g2.setFont(u8g2_font_5x7_tr);
+  
+  u8g2.sendBuffer();
+}

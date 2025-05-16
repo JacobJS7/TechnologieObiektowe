@@ -21,8 +21,6 @@ The ESP32 firmware (found in src/main.cpp) collects and logs:
 
 ### Libraries
 The project uses the following libraries:
-- [Adafruit AHTX0](https://github.com/adafruit/Adafruit_AHTX0) - For temperature and humidity sensing
-- [Adafruit BMP280](https://github.com/adafruit/Adafruit_BMP280_Library) - For barometric pressure and altitude readings
 - [TinyGPSPlus](https://github.com/mikalhart/TinyGPSPlus) - For parsing GPS NMEA data
 - [EspSoftwareSerial](https://github.com/plerup/espsoftwareserial/) - For communication with the GPS module
 - [U8g2](https://github.com/olikraus/u8g2) - For controlling the display

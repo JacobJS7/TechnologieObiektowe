@@ -5,10 +5,8 @@ TransportTracker is an ESP32-C3 based GPS tracking system that records location 
 
 ## Hardware Components
 - ESP32-C3-DEVKITM-1 microcontroller
-- GPS module (connected via SoftwareSerial)
-- AHTX0 temperature and humidity sensor
-- BMP280 barometric pressure and altitude sensor
-- Display (using U8g2 library, likely an OLED display)
+- NEO-6M GPS module (connected via SoftwareSerial)
+- SSD1306 OLED display (using U8g2 library)
 
 ## Firmware Features
 The ESP32 firmware (found in src/main.cpp) collects and logs:

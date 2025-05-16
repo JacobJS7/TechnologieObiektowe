@@ -1,11 +1,14 @@
 from PyQt5.QtWebEngineWidgets import QWebEngineView
-import html
+import requests
+import time
+from math import radians, sin, cos, sqrt, atan2
 
 
 class MapWidget(QWebEngineView):
     def __init__(self):
         super().__init__()
         self.load_map()
+        self.speed_limits_cache = {}  # Cache na limity prędkości
 
     def _get_base_html(self, center_lat=52.2298, center_lon=21.0122, zoom=12):
         return f"""
@@ -20,6 +23,15 @@ class MapWidget(QWebEngineView):
             <style>
                 #mapid {{ width: 100%; height: 100vh; }}
                 body {{ margin: 0; }}
+                .speed-info {{ 
+                    padding: 6px 8px; 
+                    background: white; 
+                    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+                    border-radius: 5px;
+                }}
+                .speed-info h4 {{ margin: 0 0 5px; }}
+                .legend {{ line-height: 18px; color: #555; }}
+                .legend i {{ width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }}
             </style>
         </head>
         <body>
@@ -29,6 +41,17 @@ class MapWidget(QWebEngineView):
                 L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
                     attribution: '© OpenStreetMap contributors'
                 }}).addTo(map);
+
+                // Dodaj legendę
+                var legend = L.control({{position: 'bottomright'}});
+                legend.onAdd = function (map) {{
+                    var div = L.DomUtil.create('div', 'speed-info legend');
+                    div.innerHTML += '<h4>Prędkość</h4>';
+                    div.innerHTML += '<i style="background:green"></i> W normie<br>';
+                    div.innerHTML += '<i style="background:red"></i> Przekroczona<br>';
+                    return div;
+                }};
+                legend.addTo(map);
 
                 // PLACEHOLDER_FOR_MARKERS
                 // PLACEHOLDER_FOR_POLYLINE
@@ -40,21 +63,129 @@ class MapWidget(QWebEngineView):
     def load_map(self):
         self.setHtml(self._get_base_html())
 
+    def get_route_speed_limits(self, points):
+        """Pobiera limity prędkości dla całej trasy za jednym razem"""
+        if not points or len(points) < 2:
+            return {}
+            
+        # Znajdź bounding box dla całej trasy
+        min_lat = min(p.latitude for p in points)
+        max_lat = max(p.latitude for p in points)
+        min_lon = min(p.longitude for p in points)
+        max_lon = max(p.longitude for p in points)
+        
+        # Dodaj margines
+        buffer = 0.01  # ~1km
+        min_lat -= buffer
+        max_lat += buffer
+        min_lon -= buffer
+        max_lon += buffer
+        
+        # Zapytanie Overpass API o wszystkie drogi z limitami prędkości w tym obszarze
+        overpass_url = "https://overpass-api.de/api/interpreter"
+        overpass_query = f"""
+        [out:json];
+        way["highway"]["maxspeed"]({min_lat},{min_lon},{max_lat},{max_lon});
+        out geom;
+        """
+        
+        road_segments = {}
+        
+        try:
+            print("Pobieranie danych o limitach prędkości...")
+            response = requests.get(overpass_url, params={"data": overpass_query}, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Przetwórz wszystkie drogi
+                for road in data.get("elements", []):
+                    if "maxspeed" in road.get("tags", {}) and "geometry" in road:
+                        try:
+                            speed_limit = int(road["tags"]["maxspeed"].split()[0])
+                        except (ValueError, IndexError):
+                            continue
+                            
+                        # Zapisz wszystkie segmenty drogi
+                        coords = road.get("geometry", [])
+                        for i in range(len(coords) - 1):
+                            start = (coords[i]["lat"], coords[i]["lon"])
+                            end = (coords[i+1]["lat"], coords[i+1]["lon"])
+                            segment = (start, end)
+                            road_segments[segment] = speed_limit
+                
+                print(f"Znaleziono {len(road_segments)} segmentów dróg z limitami prędkości")
+            else:
+                print(f"Błąd API: {response.status_code}")
+                
+        except Exception as e:
+            print(f"Błąd podczas pobierania limitów prędkości: {e}")
+        
+        return road_segments
+        
+    def find_nearest_road_segment(self, lat, lon, road_segments):
+        """Znajduje najbliższy segment drogi dla danego punktu"""
+        if not road_segments:
+            return None, 50  # Domyślny limit 50 km/h
+            
+        min_distance = float('inf')
+        nearest_segment = None
+        
+        for segment, speed_limit in road_segments.items():
+            # Oblicz odległość punktu od segmentu drogi
+            distance = self.point_to_segment_distance(lat, lon, *segment[0], *segment[1])
+            
+            if distance < min_distance:
+                min_distance = distance
+                nearest_segment = (segment, speed_limit)
+                
+        # Jeśli punkt jest dalej niż 100m od najbliższej drogi, użyj domyślnego limitu
+        if min_distance > 0.001:  # ~100m w stopniach
+            return None, 50
+            
+        return nearest_segment
+        
+    def point_to_segment_distance(self, px, py, x1, y1, x2, y2):
+        """Oblicza odległość punktu od odcinka drogi (uproszczona wersja)"""
+        # Przybliżona odległość - wystarczająca dla naszych potrzeb
+        return min(
+            self.haversine_distance(px, py, x1, y1),
+            self.haversine_distance(px, py, x2, y2)
+        )
+        
+    def haversine_distance(self, lat1, lon1, lat2, lon2):
+        """Oblicza odległość między dwoma punktami geograficznymi w km"""
+        # Promień Ziemi w km
+        R = 6371.0
+        
+        lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
+        
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        
+        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1-a))
+        
+        return R * c
+
     def load_points(self, points):
         if not points:
             self.load_map()
             return
 
-        # markery
+        # Pobierz limity prędkości dla całej trasy za jednym razem
+        road_segments = self.get_route_speed_limits(points)
+        
+        # Markery i segmenty
         markers_js = ""
-        path_coords = []  # tablica punktow
-
+        segments_js = ""
+        
         for i, p in enumerate(points, 1):
             popup_content = (
                 f"Punkt {i} <br> "
                 f"Godzina: {p.time} <br>"
                 f"Data: {p.date}<br>"
-                f"Prędkość: {p.speed} km/h`"
+                f"Prędkość: {p.speed} km/h"
             )
 
             # dodawanie markerow do punktow
@@ -64,10 +195,40 @@ class MapWidget(QWebEngineView):
             elif i == len(points):
                 icon_js = "icon: L.divIcon({className: 'marker-end', html: '<div style=\"background-color: red; width: 10px; height: 10px; border-radius: 50%;\"></div>'})"
 
-            markers_js += f"L.marker([{p.latitude}, {p.longitude}], {{{icon_js}}}).addTo(map).bindPopup('{popup_content}');\n"
-            path_coords.append(f"[{p.latitude}, {p.longitude}]")
+            # Używamy backtick'ów dla poprawnego renderowania HTML w popupach
+            markers_js += f"L.marker([{p.latitude}, {p.longitude}], {{{icon_js}}}).addTo(map).bindPopup(`{popup_content}`);\n"
 
-        polyline_js = f"L.polyline([{', '.join(path_coords)}], {{color: 'lime', weight: 3}}).addTo(map);"
+            # Tworzenie kolorowanych segmentów między punktami
+            if i > 1:
+                prev_point = points[i-2]  # Poprzedni punkt
+                
+                try:
+                    # Znajdź najbliższy segment drogi i jego limit prędkości
+                    _, speed_limit = self.find_nearest_road_segment(
+                        (prev_point.latitude + p.latitude)/2,  # środek segmentu
+                        (prev_point.longitude + p.longitude)/2,
+                        road_segments
+                    )
+                    
+                    # Porównaj faktyczną prędkość z limitem
+                    actual_speed = float(p.speed)
+                    speed_exceeded = actual_speed > speed_limit
+                    
+                    # Wybierz kolor w zależności od przekroczenia
+                    color = 'red' if speed_exceeded else 'green'
+                    
+                    # Dodaj segment z odpowiednim kolorem
+                    segments_js += f"""
+                    L.polyline([[{prev_point.latitude}, {prev_point.longitude}], [{p.latitude}, {p.longitude}]], 
+                        {{color: '{color}', weight: 4}}).addTo(map)
+                        .bindTooltip('Limit: {speed_limit} km/h<br>Prędkość: {p.speed} km/h');
+                    """
+                except (ValueError, TypeError):
+                    # Jeśli nie można przekonwertować prędkości, użyj domyślnego koloru
+                    segments_js += f"""
+                    L.polyline([[{prev_point.latitude}, {prev_point.longitude}], [{p.latitude}, {p.longitude}]], 
+                        {{color: 'blue', weight: 4}}).addTo(map);
+                    """
 
         html_content = self._get_base_html(
             center_lat=points[0].latitude,
@@ -76,6 +237,6 @@ class MapWidget(QWebEngineView):
         )
 
         html_content = html_content.replace("// PLACEHOLDER_FOR_MARKERS", markers_js)
-        html_content = html_content.replace("// PLACEHOLDER_FOR_POLYLINE", polyline_js)
+        html_content = html_content.replace("// PLACEHOLDER_FOR_POLYLINE", segments_js)
 
         self.setHtml(html_content)

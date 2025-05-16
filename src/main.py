@@ -3,7 +3,7 @@ from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QDockWidget, QTableWidget, QTableWidgetItem, QWidget, QVBoxLayout, QTextEdit,
-    QListWidget, QAction
+    QListWidget, QAction, QFileDialog
 )
 from PyQt5.QtCore import Qt
 from PyQt5.uic.properties import QtWidgets
@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
         import_action.triggered.connect(self.import_data)
         export_action = QAction("Eksportuj", self)
         export_action.setObjectName("exportAction")
+        export_action.triggered.connect(self.export_map)
         file_menu.addAction(import_action)
         file_menu.addAction(export_action)
 
@@ -170,6 +171,36 @@ class MainWindow(QMainWindow):
             return
         plotter = Plotter(self.points)
         plotter.plot_satelite()
+
+    def export_map(self):
+        if not hasattr(self, 'points') or not self.points:
+            self.statusBar().showMessage("Brak danych do eksportu. Najpierw zaimportuj dane.")
+            return
+            
+        file_name, _ = QFileDialog.getSaveFileName(
+            self, 
+            "Eksportuj mapę", 
+            "", 
+            "Pliki HTML (*.html);;Wszystkie pliki (*)"
+        )
+        
+        if file_name:
+            try:
+                # Pobierz aktualną zawartość HTML mapy
+                self.map_widget.page().toHtml(lambda html_content: self._save_html_to_file(html_content, file_name))
+                self.statusBar().showMessage(f"Mapa została wyeksportowana do: {file_name}")
+            except Exception as e:
+                self.statusBar().showMessage(f"Błąd podczas eksportowania mapy: {str(e)}")
+                print(f"Błąd eksportu: {e}")
+            
+    def _save_html_to_file(self, html_content, file_name):
+        try:
+            with open(file_name, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            print(f"Mapa została zapisana do pliku: {file_name}")
+        except Exception as e:
+            self.statusBar().showMessage(f"Błąd podczas zapisywania pliku: {str(e)}")
+            print(f"Błąd zapisu: {e}")
 
 if __name__ == "__main__":
     from PyQt5.QtCore import Qt

@@ -13,7 +13,23 @@ from plot_generator import Plotter
 
 
 class MainWindow(QMainWindow):
+    """
+    Główne okno aplikacji Py Road.
+
+    Dziedziczy po QMainWindow i zarządza głównym interfejsem użytkownika,
+    obsługą menu, importem danych, wyświetlaniem mapy oraz wykresów.
+
+    :ivar map_widget: Widget mapy wyświetlający trasę.
+    :ivar point_list_widget: Lista punktów trasy.
+    :ivar point_info_widget: Szczegóły wybranego punktu.
+    :ivar points: Lista zaimportowanych punktów GPS.
+    """
+
     def __init__(self):
+        """
+        Inicjalizuje główne okno aplikacji, ustawia menu, status bar,
+        centralny widget oraz domyślne widżety boczne.
+        """
         super().__init__()
 
         self.setWindowTitle("Py Road")
@@ -35,6 +51,9 @@ class MainWindow(QMainWindow):
         self.add_list_point_info(["Zaimportuj najpierw dane"])
 
     def setup_menu(self):
+        """
+        Tworzy pasek menu z opcjami importu, eksportu oraz generowania wykresów.
+        """
         menubar = self.menuBar()
         file_menu = menubar.addMenu("Plik")
         import_action = QAction("Importuj", self)
@@ -69,6 +88,11 @@ class MainWindow(QMainWindow):
         plot_menu.addAction(battery_voltage_action)
 
     def import_data(self):
+        """
+        Importuje dane GPS z pliku, aktualizuje listę punktów oraz mapę.
+
+        :return: None
+        """
         loader = GPSLoader()
         if loader.choose_file(self):
             self.points = loader.load_data()
@@ -85,6 +109,12 @@ class MainWindow(QMainWindow):
             self.point_list_widget.itemClicked.connect(self.display_point_info)
 
     def add_list_dock_widget(self, pointslist):
+        """
+        Dodaje dock widget z listą punktów.
+
+        :param pointslist: Lista nazw punktów do wyświetlenia.
+        :type pointslist: list[str]
+        """
         dock = QDockWidget("Lista punktów", self)
         self.point_list_widget = QListWidget()
         self.point_list_widget.addItems(pointslist)
@@ -92,6 +122,12 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
 
     def add_list_point_info(self, point_info):
+        """
+        Dodaje dock widget z informacjami o punktach.
+
+        :param point_info: Lista informacji do wyświetlenia.
+        :type point_info: list[str]
+        """
         dock = QDockWidget("Szczegóły punktów", self)
         self.point_info_widget = QListWidget()
         self.point_info_widget.addItems(point_info)
@@ -99,6 +135,12 @@ class MainWindow(QMainWindow):
         self.addDockWidget(Qt.BottomDockWidgetArea, dock)
 
     def display_point_info(self, item):
+        """
+        Wyświetla szczegóły wybranego punktu na liście.
+
+        :param item: Wybrany element z listy punktów.
+        :type item: QListWidgetItem
+        """
         punkt_nazwa = item.text()
         print(f"Kliknięto: {punkt_nazwa}")
         itemindex = self.point_list_widget.row(item)
@@ -124,12 +166,23 @@ class MainWindow(QMainWindow):
         ])
 
     def add_table_dock_widget(self, title, data, headers, position):
+        """
+        Dodaje dock widget z tabelą danych.
+
+        :param title: Tytuł tabeli.
+        :type title: str
+        :param data: Dane do wyświetlenia w tabeli.
+        :type data: list[list[str]]
+        :param headers: Nagłówki kolumn.
+        :type headers: list[str]
+        :param position: Pozycja dokowania ('Left', 'Right', 'Top', 'Bottom').
+        :type position: str
+        """
         dock = QDockWidget(title, self)
         dock.setAllowedAreas(
             Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea | Qt.TopDockWidgetArea | Qt.BottomDockWidgetArea
         )
 
-        #tabela
         table = QTableWidget()
         table.setRowCount(len(data))
         table.setColumnCount(len(headers))
@@ -143,36 +196,56 @@ class MainWindow(QMainWindow):
         self.addDockWidget(getattr(Qt, f"{position.capitalize()}DockWidgetArea"), dock)
 
     def show_speed_plot(self):
+        """
+        Wyświetla wykres prędkości na podstawie zaimportowanych punktów.
+        """
         if not hasattr(self, 'points') or not self.points:
             return
         plotter = Plotter(self.points)
         plotter.plot_speed()
 
     def show_altitude_plot(self):
+        """
+        Wyświetla wykres wysokości na podstawie zaimportowanych punktów.
+        """
         if not hasattr(self, 'points') or not self.points:
             return
         plotter = Plotter(self.points)
         plotter.plot_altitude()
 
     def show_hdop_plot(self):
+        """
+        Wyświetla wykres dokładności HDOP na podstawie zaimportowanych punktów.
+        """
         if not hasattr(self, 'points') or not self.points:
             return
         plotter = Plotter(self.points)
         plotter.plot_hdop()
 
     def show_voltage_plot(self):
+        """
+        Wyświetla wykres napięcia baterii na podstawie zaimportowanych punktów.
+        """
         if not hasattr(self, 'points') or not self.points:
             return
         plotter = Plotter(self.points)
         plotter.plot_voltage()
 
     def show_satelite_plot(self):
+        """
+        Wyświetla wykres liczby satelit na podstawie zaimportowanych punktów.
+        """
         if not hasattr(self, 'points') or not self.points:
             return
         plotter = Plotter(self.points)
         plotter.plot_satelite()
 
     def export_map(self):
+        """
+        Eksportuje aktualną mapę do pliku HTML.
+
+        :return: None
+        """
         if not hasattr(self, 'points') or not self.points:
             self.statusBar().showMessage("Brak danych do eksportu. Najpierw zaimportuj dane.")
             return
@@ -194,6 +267,14 @@ class MainWindow(QMainWindow):
                 print(f"Błąd eksportu: {e}")
             
     def _save_html_to_file(self, html_content, file_name):
+        """
+        Zapisuje zawartość HTML mapy do pliku.
+
+        :param html_content: Zawartość HTML mapy.
+        :type html_content: str
+        :param file_name: Ścieżka do pliku docelowego.
+        :type file_name: str
+        """
         try:
             with open(file_name, 'w', encoding='utf-8') as f:
                 f.write(html_content)

@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pl" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>map_widget &mdash; Py Road 1.0.0 - dokumentacja</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4cec2c57"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=2827c288"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Indeks" href="../genindex.html" />
+    <link rel="search" title="Szukaj" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Py Road
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Szukaj" aria-label="Szukaj" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Py Road</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kod modułu</a></li>
+      <li class="breadcrumb-item active">map_widget</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Kod źródłowy modułu map_widget</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWebEngineWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebEngineView</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">radians</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">atan2</span>
+
+
+<div class="viewcode-block" id="MapWidget">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget">[dokumentacja]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MapWidget</span><span class="p">(</span><span class="n">QWebEngineView</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Widget do wyświetlania interaktywnych map z trasami GPS.</span>
+<span class="sd">    </span>
+<span class="sd">    Używa OpenStreetMap przez Leaflet do wizualizacji tras GPS z kolorowaniem</span>
+<span class="sd">    na podstawie limitów prędkości pobranych z API OpenStreetMap.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inicjalizuje widget mapy i ładuje mapę bazową.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_map</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speed_limits_cache</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># Cache na limity prędkości, aby ograniczyć liczbę zapytań do API</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_base_html</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_lat</span><span class="o">=</span><span class="mf">52.2298</span><span class="p">,</span> <span class="n">center_lon</span><span class="o">=</span><span class="mf">21.0122</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generuje bazowy kod HTML dla mapy.</span>
+<span class="sd">        </span>
+<span class="sd">        :param center_lat: Początkowa szerokość geograficzna środka mapy</span>
+<span class="sd">        :type center_lat: float</span>
+<span class="sd">        :param center_lon: Początkowa długość geograficzna środka mapy</span>
+<span class="sd">        :type center_lon: float</span>
+<span class="sd">        :param zoom: Początkowy stopień powiększenia mapy</span>
+<span class="sd">        :type zoom: int</span>
+<span class="sd">        :return: Kod HTML z osadzoną mapą Leaflet</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;!DOCTYPE html&gt;</span>
+<span class="s2">        &lt;html&gt;</span>
+<span class="s2">        &lt;head&gt;</span>
+<span class="s2">            &lt;meta charset=&quot;utf-8&quot; /&gt;</span>
+<span class="s2">            &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span>
+<span class="s2">            &lt;title&gt;Mapa&lt;/title&gt;</span>
+<span class="s2">            &lt;link rel=&quot;stylesheet&quot; href=&quot;https://unpkg.com/leaflet@1.7.1/dist/leaflet.css&quot; /&gt;</span>
+<span class="s2">            &lt;script src=&quot;https://unpkg.com/leaflet@1.7.1/dist/leaflet.js&quot;&gt;&lt;/script&gt;</span>
+<span class="s2">            &lt;style&gt;</span>
+<span class="s2">                #mapid </span><span class="se">{{</span><span class="s2"> width: 100%; height: 100vh; </span><span class="se">}}</span>
+<span class="s2">                body </span><span class="se">{{</span><span class="s2"> margin: 0; </span><span class="se">}}</span>
+<span class="s2">                .speed-info </span><span class="se">{{</span><span class="s2"> </span>
+<span class="s2">                    padding: 6px 8px; </span>
+<span class="s2">                    background: white; </span>
+<span class="s2">                    box-shadow: 0 0 15px rgba(0,0,0,0.2);</span>
+<span class="s2">                    border-radius: 5px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                .speed-info h4 </span><span class="se">{{</span><span class="s2"> margin: 0 0 5px; </span><span class="se">}}</span>
+<span class="s2">                .legend </span><span class="se">{{</span><span class="s2"> line-height: 18px; color: #555; </span><span class="se">}}</span>
+<span class="s2">                .legend i </span><span class="se">{{</span><span class="s2"> width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; </span><span class="se">}}</span>
+<span class="s2">            &lt;/style&gt;</span>
+<span class="s2">        &lt;/head&gt;</span>
+<span class="s2">        &lt;body&gt;</span>
+<span class="s2">            &lt;div id=&quot;mapid&quot;&gt;&lt;/div&gt;</span>
+<span class="s2">            &lt;script&gt;</span>
+<span class="s2">                var map = L.map(&#39;mapid&#39;).setView([</span><span class="si">{</span><span class="n">center_lat</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">center_lon</span><span class="si">}</span><span class="s2">], </span><span class="si">{</span><span class="n">zoom</span><span class="si">}</span><span class="s2">);</span>
+<span class="s2">                L.tileLayer(&#39;https://</span><span class="se">{{</span><span class="s2">s</span><span class="se">}}</span><span class="s2">.tile.openstreetmap.org/</span><span class="se">{{</span><span class="s2">z</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">x</span><span class="se">}}</span><span class="s2">/</span><span class="se">{{</span><span class="s2">y</span><span class="se">}}</span><span class="s2">.png&#39;, </span><span class="se">{{</span>
+<span class="s2">                    attribution: &#39;© OpenStreetMap contributors&#39;</span>
+<span class="s2">                </span><span class="se">}}</span><span class="s2">).addTo(map);</span>
+
+<span class="s2">                // Dodaj legendę</span>
+<span class="s2">                var legend = L.control(</span><span class="se">{{</span><span class="s2">position: &#39;bottomright&#39;</span><span class="se">}}</span><span class="s2">);</span>
+<span class="s2">                legend.onAdd = function (map) </span><span class="se">{{</span>
+<span class="s2">                    var div = L.DomUtil.create(&#39;div&#39;, &#39;speed-info legend&#39;);</span>
+<span class="s2">                    div.innerHTML += &#39;&lt;h4&gt;Prędkość&lt;/h4&gt;&#39;;</span>
+<span class="s2">                    div.innerHTML += &#39;&lt;i style=&quot;background:green&quot;&gt;&lt;/i&gt; W normie&lt;br&gt;&#39;;</span>
+<span class="s2">                    div.innerHTML += &#39;&lt;i style=&quot;background:red&quot;&gt;&lt;/i&gt; Przekroczona&lt;br&gt;&#39;;</span>
+<span class="s2">                    return div;</span>
+<span class="s2">                </span><span class="se">}}</span><span class="s2">;</span>
+<span class="s2">                legend.addTo(map);</span>
+
+<span class="s2">                // PLACEHOLDER_FOR_MARKERS</span>
+<span class="s2">                // PLACEHOLDER_FOR_POLYLINE</span>
+<span class="s2">            &lt;/script&gt;</span>
+<span class="s2">        &lt;/body&gt;</span>
+<span class="s2">        &lt;/html&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MapWidget.load_map">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.load_map">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ładuje pustą mapę bazową.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setHtml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_base_html</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="MapWidget.get_route_speed_limits">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.get_route_speed_limits">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_route_speed_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Pobiera limity prędkości dla całej trasy za jednym razem z Overpass API.</span>
+
+<span class="sd">        :param points: Lista punktów GPS</span>
+<span class="sd">        :type points: list</span>
+<span class="sd">        :return: Słownik segmentów dróg i ich limitów prędkości</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">points</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+            
+        <span class="n">min_lat</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">max_lat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">min_lon</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">max_lon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
+        
+        <span class="n">buffer</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># ok 1km</span>
+        <span class="n">min_lat</span> <span class="o">-=</span> <span class="n">buffer</span>
+        <span class="n">max_lat</span> <span class="o">+=</span> <span class="n">buffer</span>
+        <span class="n">min_lon</span> <span class="o">-=</span> <span class="n">buffer</span>
+        <span class="n">max_lon</span> <span class="o">+=</span> <span class="n">buffer</span>
+        
+        <span class="c1"># Zapytanie Overpass API o wszystkie drogi z limitami prędkości w tym obszarze</span>
+        <span class="n">overpass_url</span> <span class="o">=</span> <span class="s2">&quot;https://overpass-api.de/api/interpreter&quot;</span>
+        <span class="n">overpass_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        [out:json];</span>
+<span class="s2">        way[&quot;highway&quot;][&quot;maxspeed&quot;](</span><span class="si">{</span><span class="n">min_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">min_lon</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lon</span><span class="si">}</span><span class="s2">);</span>
+<span class="s2">        out geom;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        
+        <span class="n">road_segments</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pobieranie danych o limitach prędkości...&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">overpass_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">overpass_query</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                
+                <span class="c1"># Przetwórz wszystkie drogi</span>
+                <span class="k">for</span> <span class="n">road</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+                    <span class="k">if</span> <span class="s2">&quot;maxspeed&quot;</span> <span class="ow">in</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="ow">and</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">in</span> <span class="n">road</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">speed_limit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">road</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">][</span><span class="s2">&quot;maxspeed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+                            <span class="k">continue</span>
+                            
+                        <span class="c1"># wszystkie segmenty drogi</span>
+                        <span class="n">coords</span> <span class="o">=</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                            <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
+                            <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
+                            <span class="n">segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+                            <span class="n">road_segments</span><span class="p">[</span><span class="n">segment</span><span class="p">]</span> <span class="o">=</span> <span class="n">speed_limit</span>
+                
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Znaleziono </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">road_segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> segmentów dróg z limitami prędkości&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd API: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd podczas pobierania limitów prędkości: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">road_segments</span></div>
+
+        
+<div class="viewcode-block" id="MapWidget.find_nearest_road_segment">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.find_nearest_road_segment">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_nearest_road_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">road_segments</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Znajduje najbliższy segment drogi dla danego punktu.</span>
+
+<span class="sd">        :param lat: Szerokość geograficzna punktu</span>
+<span class="sd">        :type lat: float</span>
+<span class="sd">        :param lon: Długość geograficzna punktu</span>
+<span class="sd">        :type lon: float</span>
+<span class="sd">        :param road_segments: Słownik segmentów dróg i limitów prędkości</span>
+<span class="sd">        :type road_segments: dict</span>
+<span class="sd">        :return: Najbliższy segment i jego limit prędkości</span>
+<span class="sd">        :rtype: tuple lub None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">road_segments</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span>  <span class="c1"># domyślnie 50 km/h</span>
+            
+        <span class="n">min_distance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+        <span class="n">nearest_segment</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="k">for</span> <span class="n">segment</span><span class="p">,</span> <span class="n">speed_limit</span> <span class="ow">in</span> <span class="n">road_segments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Oblicz odległość punktu od segmentu drogi</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_to_segment_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">min_distance</span><span class="p">:</span>
+                <span class="n">min_distance</span> <span class="o">=</span> <span class="n">distance</span>
+                <span class="n">nearest_segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">speed_limit</span><span class="p">)</span>
+                
+        <span class="c1"># Jeśli punkt jest dalej niż 100m od najbliższej drogi, użyj domyślnego limitu</span>
+        <span class="k">if</span> <span class="n">min_distance</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">:</span>  <span class="c1"># ok 100m</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span>
+            
+        <span class="k">return</span> <span class="n">nearest_segment</span></div>
+
+        
+<div class="viewcode-block" id="MapWidget.point_to_segment_distance">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.point_to_segment_distance">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">point_to_segment_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Oblicza odległość punktu od odcinka drogi (uproszczona wersja).</span>
+
+<span class="sd">        :param px: Szerokość geograficzna punktu</span>
+<span class="sd">        :type px: float</span>
+<span class="sd">        :param py: Długość geograficzna punktu</span>
+<span class="sd">        :type py: float</span>
+<span class="sd">        :param x1: Szerokość geograficzna początku odcinka</span>
+<span class="sd">        :type x1: float</span>
+<span class="sd">        :param y1: Długość geograficzna początku odcinka</span>
+<span class="sd">        :type y1: float</span>
+<span class="sd">        :param x2: Szerokość geograficzna końca odcinka</span>
+<span class="sd">        :type x2: float</span>
+<span class="sd">        :param y2: Długość geograficzna końca odcinka</span>
+<span class="sd">        :type y2: float</span>
+<span class="sd">        :return: Odległość w kilometrach</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+        
+<div class="viewcode-block" id="MapWidget.haversine_distance">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.haversine_distance">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">haversine_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Oblicza odległość między dwoma punktami geograficznymi w kilometrach.</span>
+
+<span class="sd">        :param lat1: Szerokość geograficzna pierwszego punktu</span>
+<span class="sd">        :type lat1: float</span>
+<span class="sd">        :param lon1: Długość geograficzna pierwszego punktu</span>
+<span class="sd">        :type lon1: float</span>
+<span class="sd">        :param lat2: Szerokość geograficzna drugiego punktu</span>
+<span class="sd">        :type lat2: float</span>
+<span class="sd">        :param lon2: Długość geograficzna drugiego punktu</span>
+<span class="sd">        :type lon2: float</span>
+<span class="sd">        :return: Odległość w kilometrach</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Promień Ziemi w km</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="mf">6371.0</span>
+        
+        <span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="n">radians</span><span class="p">,</span> <span class="p">[</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">])</span>
+        
+        <span class="n">dlat</span> <span class="o">=</span> <span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span>
+        <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span>
+        
+        <span class="n">a</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat1</span><span class="p">)</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">lat2</span><span class="p">)</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlon</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="MapWidget.load_points">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.load_points">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ładuje punkty GPS na mapę oraz koloruje trasę w zależności od przekroczenia limitu prędkości.</span>
+
+<span class="sd">        :param points: Lista punktów GPS</span>
+<span class="sd">        :type points: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">points</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_map</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Pobieranie limity prędkości dla całej trasy za jednym razem</span>
+        <span class="n">road_segments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_route_speed_limits</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        
+        <span class="n">markers_js</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">segments_js</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">popup_content</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Punkt </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> &lt;br&gt; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Godzina: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2"> &lt;br&gt;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Data: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">date</span><span class="si">}</span><span class="s2">&lt;br&gt;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Prędkość: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&quot;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># dodawanie markerow</span>
+            <span class="n">icon_js</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">icon_js</span> <span class="o">=</span> <span class="s2">&quot;icon: L.divIcon({className: &#39;marker-start&#39;, html: &#39;&lt;div style=</span><span class="se">\&quot;</span><span class="s2">background-color: blue; width: 10px; height: 10px; border-radius: 50%;</span><span class="se">\&quot;</span><span class="s2">&gt;&lt;/div&gt;&#39;})&quot;</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">icon_js</span> <span class="o">=</span> <span class="s2">&quot;icon: L.divIcon({className: &#39;marker-end&#39;, html: &#39;&lt;div style=</span><span class="se">\&quot;</span><span class="s2">background-color: red; width: 10px; height: 10px; border-radius: 50%;</span><span class="se">\&quot;</span><span class="s2">&gt;&lt;/div&gt;&#39;})&quot;</span>
+
+            <span class="n">markers_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;L.marker([</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], </span><span class="se">{{</span><span class="si">{</span><span class="n">icon_js</span><span class="si">}</span><span class="se">}}</span><span class="s2">).addTo(map).bindPopup(`</span><span class="si">{</span><span class="n">popup_content</span><span class="si">}</span><span class="s2">`);</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">prev_point</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>  
+                
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">speed_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_nearest_road_segment</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># środek segmentu</span>
+                        <span class="p">(</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">road_segments</span>
+                    <span class="p">)</span>
+                    
+                    <span class="c1"># Porównaj prędkość z limitem</span>
+                    <span class="n">actual_speed</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="p">)</span>
+                    <span class="n">speed_exceeded</span> <span class="o">=</span> <span class="n">actual_speed</span> <span class="o">&gt;</span> <span class="n">speed_limit</span>
+                    
+                    <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span> <span class="k">if</span> <span class="n">speed_exceeded</span> <span class="k">else</span> <span class="s1">&#39;green&#39;</span>
+                    
+                    <span class="n">segments_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    L.polyline([[</span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], [</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">]], </span>
+<span class="s2">                        </span><span class="se">{{</span><span class="s2">color: &#39;</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&#39;, weight: 4</span><span class="se">}}</span><span class="s2">).addTo(map)</span>
+<span class="s2">                        .bindTooltip(&#39;Limit: </span><span class="si">{</span><span class="n">speed_limit</span><span class="si">}</span><span class="s2"> km/h&lt;br&gt;Prędkość: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&#39;);</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="n">segments_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                    L.polyline([[</span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], [</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">]], </span>
+<span class="s2">                        </span><span class="se">{{</span><span class="s2">color: &#39;blue&#39;, weight: 4</span><span class="se">}}</span><span class="s2">).addTo(map);</span>
+<span class="s2">                    &quot;&quot;&quot;</span>
+
+        <span class="n">html_content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_base_html</span><span class="p">(</span>
+            <span class="n">center_lat</span><span class="o">=</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span>
+            <span class="n">center_lon</span><span class="o">=</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span>
+            <span class="n">zoom</span><span class="o">=</span><span class="mi">13</span>
+        <span class="p">)</span>
+
+        <span class="n">html_content</span> <span class="o">=</span> <span class="n">html_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;// PLACEHOLDER_FOR_MARKERS&quot;</span><span class="p">,</span> <span class="n">markers_js</span><span class="p">)</span>
+        <span class="n">html_content</span> <span class="o">=</span> <span class="n">html_content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;// PLACEHOLDER_FOR_POLYLINE&quot;</span><span class="p">,</span> <span class="n">segments_js</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setHtml</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Prawa zastrzeżone 2023, Your Name.</p>
+  </div>
+
+  Zbudowano w <a href="https://www.sphinx-doc.org/">Sphinx</a> używając
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    dostarczone przez <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

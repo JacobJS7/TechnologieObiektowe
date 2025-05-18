@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pl" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>main &mdash; Py Road 1.0.0 - dokumentacja</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4cec2c57"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=2827c288"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Indeks" href="../genindex.html" />
+    <link rel="search" title="Szukaj" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Py Road
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Szukaj" aria-label="Szukaj" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Py Road</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Kod modułu</a></li>
+      <li class="breadcrumb-item active">main</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Kod źródłowy modułu main</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWebEngineWidgets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWebEngineWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">QWebEngineView</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">QApplication</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QDockWidget</span><span class="p">,</span> <span class="n">QTableWidget</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QTextEdit</span><span class="p">,</span>
+    <span class="n">QListWidget</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QFileDialog</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.uic.properties</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">map_widget</span><span class="w"> </span><span class="kn">import</span> <span class="n">MapWidget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">file_leader</span><span class="w"> </span><span class="kn">import</span> <span class="n">GPSLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plot_generator</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plotter</span>
+
+
+<div class="viewcode-block" id="MainWindow">
+<a class="viewcode-back" href="../main.html#main.MainWindow">[dokumentacja]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MainWindow</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Główne okno aplikacji Py Road.</span>
+
+<span class="sd">    Dziedziczy po QMainWindow i zarządza głównym interfejsem użytkownika,</span>
+<span class="sd">    obsługą menu, importem danych, wyświetlaniem mapy oraz wykresów.</span>
+
+<span class="sd">    :ivar map_widget: Widget mapy wyświetlający trasę.</span>
+<span class="sd">    :ivar point_list_widget: Lista punktów trasy.</span>
+<span class="sd">    :ivar point_info_widget: Szczegóły wybranego punktu.</span>
+<span class="sd">    :ivar points: Lista zaimportowanych punktów GPS.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Inicjalizuje główne okno aplikacji, ustawia menu, status bar,</span>
+<span class="sd">        centralny widget oraz domyślne widżety boczne.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Py Road&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">800</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_menu</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s2">&quot;Program gotowy&quot;</span><span class="p">)</span>
+
+        <span class="n">central_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">central_widget</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_widget</span> <span class="o">=</span> <span class="n">MapWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_widget</span><span class="o">.</span><span class="n">load_map</span><span class="p">()</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_widget</span><span class="p">)</span>
+        <span class="n">central_widget</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_list_dock_widget</span><span class="p">([</span><span class="s2">&quot;Zaimportuj najpierw dane&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_list_point_info</span><span class="p">([</span><span class="s2">&quot;Zaimportuj najpierw dane&quot;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="MainWindow.setup_menu">
+<a class="viewcode-back" href="../main.html#main.MainWindow.setup_menu">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tworzy pasek menu z opcjami importu, eksportu oraz generowania wykresów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">menubar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuBar</span><span class="p">()</span>
+        <span class="n">file_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Plik&quot;</span><span class="p">)</span>
+        <span class="n">import_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Importuj&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">import_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;importAction&quot;</span><span class="p">)</span>
+        <span class="n">import_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">import_data</span><span class="p">)</span>
+        <span class="n">export_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Eksportuj&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">export_action</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;exportAction&quot;</span><span class="p">)</span>
+        <span class="n">export_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">export_map</span><span class="p">)</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">import_action</span><span class="p">)</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">export_action</span><span class="p">)</span>
+
+        <span class="n">plot_menu</span> <span class="o">=</span> <span class="n">menubar</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Wykresy&quot;</span><span class="p">)</span>
+        <span class="n">speed_plot_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Wykres prędkości&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">speed_plot_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_speed_plot</span><span class="p">)</span>
+
+        <span class="n">altitude_plot_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Wykres wysokości npm&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">altitude_plot_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_altitude_plot</span><span class="p">)</span>
+
+        <span class="n">hdop_plot_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Wykres dokładności HDOP&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">hdop_plot_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_hdop_plot</span><span class="p">)</span>
+
+        <span class="n">satelite_count_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Wykres ilości satelit&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">satelite_count_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_satelite_plot</span><span class="p">)</span>
+
+        <span class="n">battery_voltage_action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Wykres napięcia baterii&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">battery_voltage_action</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">show_voltage_plot</span><span class="p">)</span>
+
+        <span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">speed_plot_action</span><span class="p">)</span>
+        <span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">altitude_plot_action</span><span class="p">)</span>
+        <span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">hdop_plot_action</span><span class="p">)</span>
+        <span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">satelite_count_action</span><span class="p">)</span>
+        <span class="n">plot_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">battery_voltage_action</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.import_data">
+<a class="viewcode-back" href="../main.html#main.MainWindow.import_data">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">import_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Importuje dane GPS z pliku, aktualizuje listę punktów oraz mapę.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">GPSLoader</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">loader</span><span class="o">.</span><span class="n">choose_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Wczytano </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> punktów.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s2">&quot;Zaimportowano wszystkie punkty&quot;</span><span class="p">)</span>
+
+            <span class="n">pointslist</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Punkt </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">))]</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;point_list_widget&quot;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">pointslist</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_list_dock_widget</span><span class="p">(</span><span class="n">pointslist</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">map_widget</span><span class="o">.</span><span class="n">load_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="o">.</span><span class="n">itemClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_point_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.add_list_dock_widget">
+<a class="viewcode-back" href="../main.html#main.MainWindow.add_list_dock_widget">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_list_dock_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pointslist</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodaje dock widget z listą punktów.</span>
+
+<span class="sd">        :param pointslist: Lista nazw punktów do wyświetlenia.</span>
+<span class="sd">        :type pointslist: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="s2">&quot;Lista punktów&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">pointslist</span><span class="p">)</span>
+        <span class="n">dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftDockWidgetArea</span><span class="p">,</span> <span class="n">dock</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.add_list_point_info">
+<a class="viewcode-back" href="../main.html#main.MainWindow.add_list_point_info">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_list_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodaje dock widget z informacjami o punktach.</span>
+
+<span class="sd">        :param point_info: Lista informacji do wyświetlenia.</span>
+<span class="sd">        :type point_info: list[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="s2">&quot;Szczegóły punktów&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_info_widget</span> <span class="o">=</span> <span class="n">QListWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_info_widget</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">point_info</span><span class="p">)</span>
+        <span class="n">dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point_info_widget</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">BottomDockWidgetArea</span><span class="p">,</span> <span class="n">dock</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.display_point_info">
+<a class="viewcode-back" href="../main.html#main.MainWindow.display_point_info">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">display_point_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla szczegóły wybranego punktu na liście.</span>
+
+<span class="sd">        :param item: Wybrany element z listy punktów.</span>
+<span class="sd">        :type item: QListWidgetItem</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">punkt_nazwa</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Kliknięto: </span><span class="si">{</span><span class="n">punkt_nazwa</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">itemindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_list_widget</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">itemindex</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">itemindex</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Nieprawidłowy indeks punktu&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">point</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">itemindex</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_info_widget</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point_info_widget</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span>
+            <span class="sa">f</span><span class="s2">&quot;Czas: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Data: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Szerokość: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Długość: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Wysokość: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">altitude</span><span class="si">}</span><span class="s2"> m npm&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Kurs: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">course</span><span class="si">}</span><span class="s2">°&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Prędkość: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Liczba Połączonych Satelit: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">satellites</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Wskaźnik HDOP: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">hdop</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s2">&quot;Napięcie baterii: </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">voltage</span><span class="si">}</span><span class="s2"> mV&quot;</span>
+        <span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.add_table_dock_widget">
+<a class="viewcode-back" href="../main.html#main.MainWindow.add_table_dock_widget">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_table_dock_widget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Dodaje dock widget z tabelą danych.</span>
+
+<span class="sd">        :param title: Tytuł tabeli.</span>
+<span class="sd">        :type title: str</span>
+<span class="sd">        :param data: Dane do wyświetlenia w tabeli.</span>
+<span class="sd">        :type data: list[list[str]]</span>
+<span class="sd">        :param headers: Nagłówki kolumn.</span>
+<span class="sd">        :type headers: list[str]</span>
+<span class="sd">        :param position: Pozycja dokowania (&#39;Left&#39;, &#39;Right&#39;, &#39;Top&#39;, &#39;Bottom&#39;).</span>
+<span class="sd">        :type position: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dock</span> <span class="o">=</span> <span class="n">QDockWidget</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">dock</span><span class="o">.</span><span class="n">setAllowedAreas</span><span class="p">(</span>
+            <span class="n">Qt</span><span class="o">.</span><span class="n">LeftDockWidgetArea</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">RightDockWidgetArea</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">TopDockWidgetArea</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">BottomDockWidgetArea</span>
+        <span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="n">QTableWidget</span><span class="p">()</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">setRowCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">setColumnCount</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">headers</span><span class="p">))</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">setHorizontalHeaderLabels</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">row_idx</span><span class="p">,</span> <span class="n">row_data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row_data</span><span class="p">):</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">setItem</span><span class="p">(</span><span class="n">row_idx</span><span class="p">,</span> <span class="n">col_idx</span><span class="p">,</span> <span class="n">QTableWidgetItem</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="n">dock</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">table</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addDockWidget</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">Qt</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">position</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">DockWidgetArea&quot;</span><span class="p">),</span> <span class="n">dock</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.show_speed_plot">
+<a class="viewcode-back" href="../main.html#main.MainWindow.show_speed_plot">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_speed_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla wykres prędkości na podstawie zaimportowanych punktów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_speed</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.show_altitude_plot">
+<a class="viewcode-back" href="../main.html#main.MainWindow.show_altitude_plot">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_altitude_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla wykres wysokości na podstawie zaimportowanych punktów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_altitude</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.show_hdop_plot">
+<a class="viewcode-back" href="../main.html#main.MainWindow.show_hdop_plot">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_hdop_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla wykres dokładności HDOP na podstawie zaimportowanych punktów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_hdop</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.show_voltage_plot">
+<a class="viewcode-back" href="../main.html#main.MainWindow.show_voltage_plot">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_voltage_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla wykres napięcia baterii na podstawie zaimportowanych punktów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_voltage</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.show_satelite_plot">
+<a class="viewcode-back" href="../main.html#main.MainWindow.show_satelite_plot">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">show_satelite_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Wyświetla wykres liczby satelit na podstawie zaimportowanych punktów.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">plotter</span> <span class="o">=</span> <span class="n">Plotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">plotter</span><span class="o">.</span><span class="n">plot_satelite</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MainWindow.export_map">
+<a class="viewcode-back" href="../main.html#main.MainWindow.export_map">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Eksportuje aktualną mapę do pliku HTML.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;points&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="s2">&quot;Brak danych do eksportu. Najpierw zaimportuj dane.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+            
+        <span class="n">file_name</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> 
+            <span class="s2">&quot;Eksportuj mapę&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;&quot;</span><span class="p">,</span> 
+            <span class="s2">&quot;Pliki HTML (*.html);;Wszystkie pliki (*)&quot;</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Pobierz aktualną zawartość HTML mapy</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_widget</span><span class="o">.</span><span class="n">page</span><span class="p">()</span><span class="o">.</span><span class="n">toHtml</span><span class="p">(</span><span class="k">lambda</span> <span class="n">html_content</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_html_to_file</span><span class="p">(</span><span class="n">html_content</span><span class="p">,</span> <span class="n">file_name</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mapa została wyeksportowana do: </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd podczas eksportowania mapy: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd eksportu: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+            
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_html_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">html_content</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zapisuje zawartość HTML mapy do pliku.</span>
+
+<span class="sd">        :param html_content: Zawartość HTML mapy.</span>
+<span class="sd">        :type html_content: str</span>
+<span class="sd">        :param file_name: Ścieżka do pliku docelowego.</span>
+<span class="sd">        :type file_name: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html_content</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mapa została zapisana do pliku: </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">statusBar</span><span class="p">()</span><span class="o">.</span><span class="n">showMessage</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd podczas zapisywania pliku: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd zapisu: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">Qt</span>
+
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">MainWindow</span><span class="p">()</span>
+    <span class="n">main_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Prawa zastrzeżone 2023, Your Name.</p>
+  </div>
+
+  Zbudowano w <a href="https://www.sphinx-doc.org/">Sphinx</a> używając
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    dostarczone przez <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

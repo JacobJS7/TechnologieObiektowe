@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pl" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>file_leader module &mdash; Py Road 1.0.0 - dokumentacja</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4cec2c57"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=2827c288"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Indeks" href="genindex.html" />
+    <link rel="search" title="Szukaj" href="search.html" />
+    <link rel="next" title="main module" href="main.html" />
+    <link rel="prev" title="src" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Py Road
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Szukaj" aria-label="Szukaj" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">file_leader module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#file_leader.GPSPoint"><code class="docutils literal notranslate"><span class="pre">GPSPoint</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.time"><code class="docutils literal notranslate"><span class="pre">GPSPoint.time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.date"><code class="docutils literal notranslate"><span class="pre">GPSPoint.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.latitude"><code class="docutils literal notranslate"><span class="pre">GPSPoint.latitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.longitude"><code class="docutils literal notranslate"><span class="pre">GPSPoint.longitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.altitude"><code class="docutils literal notranslate"><span class="pre">GPSPoint.altitude</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.course"><code class="docutils literal notranslate"><span class="pre">GPSPoint.course</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.speed"><code class="docutils literal notranslate"><span class="pre">GPSPoint.speed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.satellites"><code class="docutils literal notranslate"><span class="pre">GPSPoint.satellites</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.hdop"><code class="docutils literal notranslate"><span class="pre">GPSPoint.hdop</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSPoint.voltage"><code class="docutils literal notranslate"><span class="pre">GPSPoint.voltage</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#file_leader.GPSLoader"><code class="docutils literal notranslate"><span class="pre">GPSLoader</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSLoader.choose_file"><code class="docutils literal notranslate"><span class="pre">GPSLoader.choose_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file_leader.GPSLoader.load_data"><code class="docutils literal notranslate"><span class="pre">GPSLoader.load_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map_widget.html">map_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_generator.html">plot_generator module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Py Road</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">file_leader module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/file_leader.rst.txt" rel="nofollow"> Zobacz źródło strony</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-file_leader">
+<span id="file-leader-module"></span><h1>file_leader module<a class="headerlink" href="#module-file_leader" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="file_leader.GPSPoint">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">file_leader.</span></span><span class="sig-name descname"><span class="pre">GPSPoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">latitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">longitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">altitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">course</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">satellites</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hdop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_leader.html#GPSPoint"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#file_leader.GPSPoint" title="Link to this definition"></a></dt>
+<dd><p>Klasy bazowe: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Klasa danych reprezentująca pojedynczy punkt GPS.</p>
+<p>Zawiera wszystkie metryki zarejestrowane przez urządzenie GPS w danym punkcie.</p>
+<dl class="simple">
+<dt>Atrybuty:</dt><dd><p>time (str): Czas rejestracji punktu GPS
+date (str): Data rejestracji punktu GPS
+latitude (float): Współrzędna szerokości geograficznej
+longitude (float): Współrzędna długości geograficznej
+altitude (float): Wysokość nad poziomem morza w metrach
+course (float): Kierunek w stopniach
+speed (float): Prędkość w km/h
+satellites (int): Liczba połączonych satelitów
+hdop (int): Wskaźnik dokładności HDOP
+voltage (int): Napięcie baterii w mV</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.time" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.date">
+<span class="sig-name descname"><span class="pre">date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.date" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.latitude">
+<span class="sig-name descname"><span class="pre">latitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.latitude" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.longitude">
+<span class="sig-name descname"><span class="pre">longitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.longitude" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.altitude">
+<span class="sig-name descname"><span class="pre">altitude</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.altitude" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.course">
+<span class="sig-name descname"><span class="pre">course</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.course" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.speed">
+<span class="sig-name descname"><span class="pre">speed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.speed" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.satellites">
+<span class="sig-name descname"><span class="pre">satellites</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.satellites" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.hdop">
+<span class="sig-name descname"><span class="pre">hdop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.hdop" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="file_leader.GPSPoint.voltage">
+<span class="sig-name descname"><span class="pre">voltage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></em><a class="headerlink" href="#file_leader.GPSPoint.voltage" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="file_leader.GPSLoader">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">file_leader.</span></span><span class="sig-name descname"><span class="pre">GPSLoader</span></span><a class="reference internal" href="_modules/file_leader.html#GPSLoader"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#file_leader.GPSLoader" title="Link to this definition"></a></dt>
+<dd><p>Klasy bazowe: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Odpowiada za wczytywanie i parsowanie danych GPS z plików tekstowych.</p>
+<p>Ta klasa obsługuje wybór pliku przez okno dialogowe oraz konwertuje surowe dane tekstowe
+na obiekty GPSPoint.</p>
+<p>Inicjalizuje GPSLoader bez wybranego pliku.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="file_leader.GPSLoader.choose_file">
+<span class="sig-name descname"><span class="pre">choose_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_leader.html#GPSLoader.choose_file"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#file_leader.GPSLoader.choose_file" title="Link to this definition"></a></dt>
+<dd><p>Otwiera okno dialogowe windowsa do wyboru pliku z danymi GPS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<em>QWidget lub None</em>) – Widget nadrzędny dla okna dialogowego (główne okno)</p>
+</dd>
+<dt class="field-even">Zwraca<span class="colon">:</span></dt>
+<dd class="field-even"><p>True jeśli wybrano plik, False w przeciwnym razie</p>
+</dd>
+<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="file_leader.GPSLoader.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_leader.html#GPSLoader.load_data"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#file_leader.GPSLoader.load_data" title="Link to this definition"></a></dt>
+<dd><p>Wczytuje i parsuje dane GPS z wybranego pliku danych .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Zwraca<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lista obiektów GPSPoint zawierających sparsowane dane</p>
+</dd>
+<dt class="field-even">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="src" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Poprzedni</a>
+        <a href="main.html" class="btn btn-neutral float-right" title="main module" accesskey="n" rel="next">Następny <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Prawa zastrzeżone 2023, Your Name.</p>
+  </div>
+
+  Zbudowano w <a href="https://www.sphinx-doc.org/">Sphinx</a> używając
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    dostarczone przez <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

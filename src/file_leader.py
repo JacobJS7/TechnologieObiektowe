@@ -4,6 +4,23 @@ from PyQt5.QtWidgets import QFileDialog
 
 @dataclass
 class GPSPoint:
+    """
+    Klasa danych reprezentująca pojedynczy punkt GPS.
+
+    Zawiera wszystkie metryki zarejestrowane przez urządzenie GPS w danym punkcie.
+
+    Atrybuty:
+        time (str): Czas rejestracji punktu GPS
+        date (str): Data rejestracji punktu GPS
+        latitude (float): Współrzędna szerokości geograficznej
+        longitude (float): Współrzędna długości geograficznej
+        altitude (float): Wysokość nad poziomem morza w metrach
+        course (float): Kierunek w stopniach
+        speed (float): Prędkość w km/h
+        satellites (int): Liczba połączonych satelitów
+        hdop (int): Wskaźnik dokładności HDOP
+        voltage (int): Napięcie baterii w mV
+    """
     time: str
     date: str
     latitude: float
@@ -17,10 +34,27 @@ class GPSPoint:
 
 
 class GPSLoader:
+    """
+    Odpowiada za wczytywanie i parsowanie danych GPS z plików tekstowych.
+
+    Ta klasa obsługuje wybór pliku przez okno dialogowe oraz konwertuje surowe dane tekstowe
+    na obiekty GPSPoint.
+    """
+
     def __init__(self):
+        """Inicjalizuje GPSLoader bez wybranego pliku."""
         self.filename = None
 
     def choose_file(self, parent=None):
+        """
+        Otwiera okno dialogowe windowsa do wyboru pliku z danymi GPS.
+
+        :param parent: Widget nadrzędny dla okna dialogowego (główne okno)
+        :type parent: QWidget lub None
+
+        :return: True jeśli wybrano plik, False w przeciwnym razie
+        :rtype: bool
+        """
         file_name, _ = QFileDialog.getOpenFileName(parent, "Wybierz plik GPS", "", "Pliki tekstowe (*.txt);;Wszystkie pliki (*)")
         if file_name:
             self.filename = file_name
@@ -28,6 +62,12 @@ class GPSLoader:
         return False
 
     def load_data(self):
+        """
+        Wczytuje i parsuje dane GPS z wybranego pliku danych .
+
+        :return: Lista obiektów GPSPoint zawierających sparsowane dane
+        :rtype: list
+        """
         if not self.filename:
             print("Nie wybrano pliku.")
             return []
@@ -56,7 +96,7 @@ class GPSLoader:
                         )
                         points.append(point)
                     except ValueError:
-                        print(f"Blad parsowania linii: {line}")
+                        print(f"Błąd parsowania linii: {line}")
         except Exception as e:
             print(f"Błąd podczas otwierania pliku: {e}")
 

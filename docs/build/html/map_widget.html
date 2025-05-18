@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pl" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>map_widget module &mdash; Py Road 1.0.0 - dokumentacja</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4cec2c57"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=2827c288"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Indeks" href="genindex.html" />
+    <link rel="search" title="Szukaj" href="search.html" />
+    <link rel="next" title="plot_generator module" href="plot_generator.html" />
+    <link rel="prev" title="main module" href="main.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Py Road
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Szukaj" aria-label="Szukaj" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="file_leader.html">file_leader module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">map_widget module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#map_widget.MapWidget"><code class="docutils literal notranslate"><span class="pre">MapWidget</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.load_map"><code class="docutils literal notranslate"><span class="pre">MapWidget.load_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.get_route_speed_limits"><code class="docutils literal notranslate"><span class="pre">MapWidget.get_route_speed_limits()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.find_nearest_road_segment"><code class="docutils literal notranslate"><span class="pre">MapWidget.find_nearest_road_segment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.point_to_segment_distance"><code class="docutils literal notranslate"><span class="pre">MapWidget.point_to_segment_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.haversine_distance"><code class="docutils literal notranslate"><span class="pre">MapWidget.haversine_distance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.load_points"><code class="docutils literal notranslate"><span class="pre">MapWidget.load_points()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_generator.html">plot_generator module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Py Road</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">map_widget module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/map_widget.rst.txt" rel="nofollow"> Zobacz źródło strony</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-map_widget">
+<span id="map-widget-module"></span><h1>map_widget module<a class="headerlink" href="#module-map_widget" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="map_widget.MapWidget">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">map_widget.</span></span><span class="sig-name descname"><span class="pre">MapWidget</span></span><a class="reference internal" href="_modules/map_widget.html#MapWidget"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget" title="Link to this definition"></a></dt>
+<dd><p>Klasy bazowe: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWebEngineView</span></code></p>
+<p>Widget do wyświetlania interaktywnych map z trasami GPS.</p>
+<p>Używa OpenStreetMap przez Leaflet do wizualizacji tras GPS z kolorowaniem
+na podstawie limitów prędkości pobranych z API OpenStreetMap.</p>
+<p>Inicjalizuje widget mapy i ładuje mapę bazową.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.load_map">
+<span class="sig-name descname"><span class="pre">load_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.load_map"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.load_map" title="Link to this definition"></a></dt>
+<dd><p>Ładuje pustą mapę bazową.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.get_route_speed_limits">
+<span class="sig-name descname"><span class="pre">get_route_speed_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.get_route_speed_limits"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.get_route_speed_limits" title="Link to this definition"></a></dt>
+<dd><p>Pobiera limity prędkości dla całej trasy za jednym razem z Overpass API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>list</em>) – Lista punktów GPS</p>
+</dd>
+<dt class="field-even">Zwraca<span class="colon">:</span></dt>
+<dd class="field-even"><p>Słownik segmentów dróg i ich limitów prędkości</p>
+</dd>
+<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.find_nearest_road_segment">
+<span class="sig-name descname"><span class="pre">find_nearest_road_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">road_segments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.find_nearest_road_segment"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.find_nearest_road_segment" title="Link to this definition"></a></dt>
+<dd><p>Znajduje najbliższy segment drogi dla danego punktu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>float</em>) – Szerokość geograficzna punktu</p></li>
+<li><p><strong>lon</strong> (<em>float</em>) – Długość geograficzna punktu</p></li>
+<li><p><strong>road_segments</strong> (<em>dict</em>) – Słownik segmentów dróg i limitów prędkości</p></li>
+</ul>
+</dd>
+<dt class="field-even">Zwraca<span class="colon">:</span></dt>
+<dd class="field-even"><p>Najbliższy segment i jego limit prędkości</p>
+</dd>
+<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple lub None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.point_to_segment_distance">
+<span class="sig-name descname"><span class="pre">point_to_segment_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">py</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.point_to_segment_distance"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.point_to_segment_distance" title="Link to this definition"></a></dt>
+<dd><p>Oblicza odległość punktu od odcinka drogi (uproszczona wersja).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>px</strong> (<em>float</em>) – Szerokość geograficzna punktu</p></li>
+<li><p><strong>py</strong> (<em>float</em>) – Długość geograficzna punktu</p></li>
+<li><p><strong>x1</strong> (<em>float</em>) – Szerokość geograficzna początku odcinka</p></li>
+<li><p><strong>y1</strong> (<em>float</em>) – Długość geograficzna początku odcinka</p></li>
+<li><p><strong>x2</strong> (<em>float</em>) – Szerokość geograficzna końca odcinka</p></li>
+<li><p><strong>y2</strong> (<em>float</em>) – Długość geograficzna końca odcinka</p></li>
+</ul>
+</dd>
+<dt class="field-even">Zwraca<span class="colon">:</span></dt>
+<dd class="field-even"><p>Odległość w kilometrach</p>
+</dd>
+<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.haversine_distance">
+<span class="sig-name descname"><span class="pre">haversine_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.haversine_distance"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.haversine_distance" title="Link to this definition"></a></dt>
+<dd><p>Oblicza odległość między dwoma punktami geograficznymi w kilometrach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat1</strong> (<em>float</em>) – Szerokość geograficzna pierwszego punktu</p></li>
+<li><p><strong>lon1</strong> (<em>float</em>) – Długość geograficzna pierwszego punktu</p></li>
+<li><p><strong>lat2</strong> (<em>float</em>) – Szerokość geograficzna drugiego punktu</p></li>
+<li><p><strong>lon2</strong> (<em>float</em>) – Długość geograficzna drugiego punktu</p></li>
+</ul>
+</dd>
+<dt class="field-even">Zwraca<span class="colon">:</span></dt>
+<dd class="field-even"><p>Odległość w kilometrach</p>
+</dd>
+<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="map_widget.MapWidget.load_points">
+<span class="sig-name descname"><span class="pre">load_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.load_points"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.load_points" title="Link to this definition"></a></dt>
+<dd><p>Ładuje punkty GPS na mapę oraz koloruje trasę w zależności od przekroczenia limitu prędkości.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>list</em>) – Lista punktów GPS</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="main.html" class="btn btn-neutral float-left" title="main module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Poprzedni</a>
+        <a href="plot_generator.html" class="btn btn-neutral float-right" title="plot_generator module" accesskey="n" rel="next">Następny <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Prawa zastrzeżone 2023, Your Name.</p>
+  </div>
+
+  Zbudowano w <a href="https://www.sphinx-doc.org/">Sphinx</a> używając
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    dostarczone przez <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

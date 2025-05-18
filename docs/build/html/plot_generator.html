@@ -1,0 +1,177 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="pl" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>plot_generator module &mdash; Py Road 1.0.0 - dokumentacja</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4cec2c57"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=2827c288"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Indeks" href="genindex.html" />
+    <link rel="search" title="Szukaj" href="search.html" />
+    <link rel="prev" title="map_widget module" href="map_widget.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Py Road
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Szukaj" aria-label="Szukaj" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="file_leader.html">file_leader module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main.html">main module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map_widget.html">map_widget module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">plot_generator module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#plot_generator.Plotter"><code class="docutils literal notranslate"><span class="pre">Plotter</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#plot_generator.Plotter.plot_speed"><code class="docutils literal notranslate"><span class="pre">Plotter.plot_speed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot_generator.Plotter.plot_altitude"><code class="docutils literal notranslate"><span class="pre">Plotter.plot_altitude()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot_generator.Plotter.plot_hdop"><code class="docutils literal notranslate"><span class="pre">Plotter.plot_hdop()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot_generator.Plotter.plot_voltage"><code class="docutils literal notranslate"><span class="pre">Plotter.plot_voltage()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#plot_generator.Plotter.plot_satelite"><code class="docutils literal notranslate"><span class="pre">Plotter.plot_satelite()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Py Road</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">plot_generator module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/plot_generator.rst.txt" rel="nofollow"> Zobacz źródło strony</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-plot_generator">
+<span id="plot-generator-module"></span><h1>plot_generator module<a class="headerlink" href="#module-plot_generator" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="plot_generator.Plotter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plot_generator.</span></span><span class="sig-name descname"><span class="pre">Plotter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter" title="Link to this definition"></a></dt>
+<dd><p>Klasy bazowe: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Generuje różne wykresy na podstawie danych GPS z użyciem matplotlib.</p>
+<p>Ta klasa tworzy wizualizacje dla różnych metryk zebranych przez urządzenie GPS,
+takich jak prędkość, wysokość, dokładność (HDOP), liczba satelitów oraz napięcie baterii.</p>
+<p>Inicjalizuje generator wykresów na podstawie punktów GPS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parametry<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>points</strong> (<em>list</em>) – Lista obiektów GPSPoint do wizualizacji</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_generator.Plotter.plot_speed">
+<span class="sig-name descname"><span class="pre">plot_speed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter.plot_speed"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter.plot_speed" title="Link to this definition"></a></dt>
+<dd><p>Generuje i wyświetla wykres prędkości w czasie.</p>
+<p>Tworzy wykres pokazujący prędkość (km/h) dla każdego zarejestrowanego punktu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_generator.Plotter.plot_altitude">
+<span class="sig-name descname"><span class="pre">plot_altitude</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter.plot_altitude"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter.plot_altitude" title="Link to this definition"></a></dt>
+<dd><p>Generuje i wyświetla wykres wysokości nad poziomem morza.</p>
+<p>Tworzy wykres pokazujący wysokość (m npm) dla każdego punktu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_generator.Plotter.plot_hdop">
+<span class="sig-name descname"><span class="pre">plot_hdop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter.plot_hdop"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter.plot_hdop" title="Link to this definition"></a></dt>
+<dd><p>Generuje i wyświetla wykres dokładności HDOP.</p>
+<p>Tworzy wykres pokazujący wartość wskaźnika HDOP dla każdego punktu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_generator.Plotter.plot_voltage">
+<span class="sig-name descname"><span class="pre">plot_voltage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter.plot_voltage"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter.plot_voltage" title="Link to this definition"></a></dt>
+<dd><p>Generuje i wyświetla wykres napięcia baterii.</p>
+<p>Tworzy wykres pokazujący napięcie baterii (mV) dla każdego punktu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plot_generator.Plotter.plot_satelite">
+<span class="sig-name descname"><span class="pre">plot_satelite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/plot_generator.html#Plotter.plot_satelite"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#plot_generator.Plotter.plot_satelite" title="Link to this definition"></a></dt>
+<dd><p>Generuje i wyświetla wykres liczby satelitów.</p>
+<p>Tworzy wykres pokazujący liczbę połączonych satelitów dla każdego punktu.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="map_widget.html" class="btn btn-neutral float-left" title="map_widget module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Poprzedni</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Prawa zastrzeżone 2023, Your Name.</p>
+  </div>
+
+  Zbudowano w <a href="https://www.sphinx-doc.org/">Sphinx</a> używając
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    dostarczone przez <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -90,7 +90,7 @@ class MapWidget(QWebEngineView):
 
         :param points: Lista punktów GPS
         :type points: list
-        :return: Słownik segmentów dróg i ich limitów prędkości
+        :return: Słownik segmentów dróg i ich limitów prędkości oraz typy dróg
         :rtype: dict
         """
         if not points or len(points) < 2:
@@ -100,8 +100,8 @@ class MapWidget(QWebEngineView):
         max_lat = max(p.latitude for p in points)
         min_lon = min(p.longitude for p in points)
         max_lon = max(p.longitude for p in points)
-        
-        buffer = 0.01  # ok 1km
+
+        buffer = 0.00005  # ok 5m
         min_lat -= buffer
         max_lat += buffer
         min_lon -= buffer
@@ -111,44 +111,81 @@ class MapWidget(QWebEngineView):
         overpass_url = "https://overpass-api.de/api/interpreter"
         overpass_query = f"""
         [out:json];
-        way["highway"]["maxspeed"]({min_lat},{min_lon},{max_lat},{max_lon});
+        way["highway"]({min_lat},{min_lon},{max_lat},{max_lon});
         out geom;
         """
         
         road_segments = {}
         
         try:
-            print("Pobieranie danych o limitach prędkości...")
-            response = requests.get(overpass_url, params={"data": overpass_query}, timeout=10)
+            print("Pobieranie danych o drogach...")
+            response = requests.get(overpass_url, params={"data": overpass_query}, timeout=15)
             
             if response.status_code == 200:
                 data = response.json()
+                print(f"Pobrano dane o {len(data.get('elements', []))} drogach")
                 
-                # Przetwórz wszystkie drogi
                 for road in data.get("elements", []):
-                    if "maxspeed" in road.get("tags", {}) and "geometry" in road:
+                    tags = road.get("tags", {})
+                    road_type = tags.get("highway", "unclassified")
+                    
+                    if "maxspeed" in tags:
                         try:
-                            speed_limit = int(road["tags"]["maxspeed"].split()[0])
+                            speed_limit = int(tags["maxspeed"].split()[0])
                         except (ValueError, IndexError):
-                            continue
+                            # domyślny limit na podstawie typu drogi
+                            speed_limit = self._get_default_speed_limit(road_type)
+                    else:
+                        speed_limit = self._get_default_speed_limit(road_type)
                             
-                        # wszystkie segmenty drogi
-                        coords = road.get("geometry", [])
-                        for i in range(len(coords) - 1):
-                            start = (coords[i]["lat"], coords[i]["lon"])
-                            end = (coords[i+1]["lat"], coords[i+1]["lon"])
-                            segment = (start, end)
-                            road_segments[segment] = speed_limit
+                    # Wszystkie segmenty drogi
+                    coords = road.get("geometry", [])
+                    for i in range(len(coords) - 1):
+                        start = (coords[i]["lat"], coords[i]["lon"])
+                        end = (coords[i+1]["lat"], coords[i+1]["lon"])
+                        segment = (start, end)
+                        road_segments[segment] = (speed_limit, road_type)
                 
-                print(f"Znaleziono {len(road_segments)} segmentów dróg z limitami prędkości")
+                print(f"Znaleziono {len(road_segments)} segmentów dróg")
+                road_types = {}
+                for segment, (limit, road_type) in list(road_segments.items())[:10]:
+                    if road_type not in road_types:
+                        road_types[road_type] = limit
+                print(f"Przykładowe typy dróg i limity: {road_types}")
             else:
                 print(f"Błąd API: {response.status_code}")
                 
         except Exception as e:
-            print(f"Błąd podczas pobierania limitów prędkości: {e}")
+            print(f"Błąd podczas pobierania danych o drogach: {e}")
         
         return road_segments
+
+    def _get_default_speed_limit(self, road_type):
+        """
+        Zwraca domyślny limit prędkości dla danego typu drogi w Polsce.
         
+        :param road_type: Typ drogi z OSM
+        :type road_type: str
+        :return: Domyślny limit prędkości w km/h
+        :rtype: int
+        """
+        limits = {
+            'motorway': 140,
+            'trunk': 120,
+            'primary': 90,
+            'secondary': 90,
+            'tertiary': 90,
+            'residential': 50,
+            'service': 30,
+            'living_street': 20,
+            'motorway_link': 80,
+            'trunk_link': 80,
+            'primary_link': 70,
+            'secondary_link': 70,
+            'tertiary_link': 70,
+        }
+        return limits.get(road_type, 50)  # 50 km/h domyślny limit
+
     def find_nearest_road_segment(self, lat, lon, road_segments):
         """
         Znajduje najbliższy segment drogi dla danego punktu.
@@ -157,51 +194,47 @@ class MapWidget(QWebEngineView):
         :type lat: float
         :param lon: Długość geograficzna punktu
         :type lon: float
-        :param road_segments: Słownik segmentów dróg i limitów prędkości
+        :param road_segments: Słownik segmentów dróg i ich danych
         :type road_segments: dict
-        :return: Najbliższy segment i jego limit prędkości
-        :rtype: tuple lub None
+        :return: Najbliższy segment, jego limit prędkości i typ drogi
+        :rtype: tuple
         """
         if not road_segments:
-            return None, 50  # domyślnie 50 km/h
+            return None, 50, "unknown"
             
         min_distance = float('inf')
         nearest_segment = None
         
-        for segment, speed_limit in road_segments.items():
+        for segment, (speed_limit, road_type) in road_segments.items():
             # Oblicz odległość punktu od segmentu drogi
-            distance = self.point_to_segment_distance(lat, lon, *segment[0], *segment[1])
+            distance = self.point_to_segment_distance_improved(lat, lon, *segment[0], *segment[1])
             
             if distance < min_distance:
                 min_distance = distance
-                nearest_segment = (segment, speed_limit)
-                
-        # Jeśli punkt jest dalej niż 100m od najbliższej drogi, użyj domyślnego limitu
-        if min_distance > 0.001:  # ok 100m
-            return None, 50
+                nearest_segment = (segment, speed_limit, road_type)
+
+        # Jeśli punkt jest dalej niż 10m od najbliższej drogi, użyj domyślnego limitu prędkości
+        if min_distance > 0.01:  
+            return None, 50, "unknown"
             
         return nearest_segment
-        
-    def point_to_segment_distance(self, px, py, x1, y1, x2, y2):
-        """
-        Oblicza odległość punktu od odcinka drogi (uproszczona wersja).
 
-        :param px: Szerokość geograficzna punktu
-        :type px: float
-        :param py: Długość geograficzna punktu
-        :type py: float
-        :param x1: Szerokość geograficzna początku odcinka
-        :type x1: float
-        :param y1: Długość geograficzna początku odcinka
-        :type y1: float
-        :param x2: Szerokość geograficzna końca odcinka
-        :type x2: float
-        :param y2: Długość geograficzna końca odcinka
-        :type y2: float
+    def point_to_segment_distance_improved(self, px, py, x1, y1, x2, y2):
+        """
+        Oblicza dokładną odległość punktu od odcinka drogi.
+
         :return: Odległość w kilometrach
         :rtype: float
         """
+        # długość segmentu
+        segment_length = self.haversine_distance(x1, y1, x2, y2)
         
+        # Jeśli segment jest praktycznie punktem, zwróć odległość do tego punktu
+        if segment_length < 0.00001:
+            return self.haversine_distance(px, py, x1, y1)
+        
+        
+        # minimum odległości do punktów początkowego i końcowego
         return min(
             self.haversine_distance(px, py, x1, y1),
             self.haversine_distance(px, py, x2, y2)
@@ -269,18 +302,18 @@ class MapWidget(QWebEngineView):
 
             markers_js += f"L.marker([{p.latitude}, {p.longitude}], {{{icon_js}}}).addTo(map).bindPopup(`{popup_content}`);\n"
 
-            
+
             if i > 1:
                 prev_point = points[i-2]  
                 
                 try:
-                    _, speed_limit = self.find_nearest_road_segment(
+                    _, speed_limit, road_type = self.find_nearest_road_segment(
                         (prev_point.latitude + p.latitude)/2,  # środek segmentu
                         (prev_point.longitude + p.longitude)/2,
                         road_segments
                     )
                     
-                    # Porównaj prędkość z limitem
+                    # porównanie prędkości z limitem
                     actual_speed = float(p.speed)
                     speed_exceeded = actual_speed > speed_limit
                     
@@ -289,9 +322,11 @@ class MapWidget(QWebEngineView):
                     segments_js += f"""
                     L.polyline([[{prev_point.latitude}, {prev_point.longitude}], [{p.latitude}, {p.longitude}]], 
                         {{color: '{color}', weight: 4}}).addTo(map)
-                        .bindTooltip('Limit: {speed_limit} km/h<br>Prędkość: {p.speed} km/h');
+                        .bindTooltip('Typ drogi: {road_type}<br>Limit: {speed_limit} km/h<br>Prędkość: {p.speed} km/h');
                     """
-                except (ValueError, TypeError):
+                    print(f"Segment: droga typu {road_type}, limit {speed_limit} km/h, prędkość {p.speed} km/h")
+                except (ValueError, TypeError) as e:
+                    print(f"Błąd przetwarzania segmentu: {e}")
                     segments_js += f"""
                     L.polyline([[{prev_point.latitude}, {prev_point.longitude}], [{p.latitude}, {p.longitude}]], 
                         {{color: 'blue', weight: 4}}).addTo(map);

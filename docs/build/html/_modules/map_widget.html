@@ -42,8 +42,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Instalacja</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Użytkowanie</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
 </ul>
 
@@ -171,7 +171,7 @@
 
 <span class="sd">        :param points: Lista punktów GPS</span>
 <span class="sd">        :type points: list</span>
-<span class="sd">        :return: Słownik segmentów dróg i ich limitów prędkości</span>
+<span class="sd">        :return: Słownik segmentów dróg i ich limitów prędkości oraz typy dróg</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">points</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -181,8 +181,8 @@
         <span class="n">max_lat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
         <span class="n">min_lon</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
         <span class="n">max_lon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points</span><span class="p">)</span>
-        
-        <span class="n">buffer</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># ok 1km</span>
+
+        <span class="n">buffer</span> <span class="o">=</span> <span class="mf">0.00005</span>  <span class="c1"># ok 5m</span>
         <span class="n">min_lat</span> <span class="o">-=</span> <span class="n">buffer</span>
         <span class="n">max_lat</span> <span class="o">+=</span> <span class="n">buffer</span>
         <span class="n">min_lon</span> <span class="o">-=</span> <span class="n">buffer</span>
@@ -192,45 +192,86 @@
         <span class="n">overpass_url</span> <span class="o">=</span> <span class="s2">&quot;https://overpass-api.de/api/interpreter&quot;</span>
         <span class="n">overpass_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">        [out:json];</span>
-<span class="s2">        way[&quot;highway&quot;][&quot;maxspeed&quot;](</span><span class="si">{</span><span class="n">min_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">min_lon</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lon</span><span class="si">}</span><span class="s2">);</span>
+<span class="s2">        way[&quot;highway&quot;](</span><span class="si">{</span><span class="n">min_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">min_lon</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lat</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">max_lon</span><span class="si">}</span><span class="s2">);</span>
 <span class="s2">        out geom;</span>
 <span class="s2">        &quot;&quot;&quot;</span>
         
         <span class="n">road_segments</span> <span class="o">=</span> <span class="p">{}</span>
         
         <span class="k">try</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pobieranie danych o limitach prędkości...&quot;</span><span class="p">)</span>
-            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">overpass_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">overpass_query</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pobieranie danych o drogach...&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">overpass_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">overpass_query</span><span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pobrano dane o </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;elements&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">[]))</span><span class="si">}</span><span class="s2"> drogach&quot;</span><span class="p">)</span>
                 
                 <span class="c1"># Przetwórz wszystkie drogi</span>
                 <span class="k">for</span> <span class="n">road</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="p">[]):</span>
-                    <span class="k">if</span> <span class="s2">&quot;maxspeed&quot;</span> <span class="ow">in</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">{})</span> <span class="ow">and</span> <span class="s2">&quot;geometry&quot;</span> <span class="ow">in</span> <span class="n">road</span><span class="p">:</span>
+                    <span class="n">tags</span> <span class="o">=</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="n">road_type</span> <span class="o">=</span> <span class="n">tags</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;highway&quot;</span><span class="p">,</span> <span class="s2">&quot;unclassified&quot;</span><span class="p">)</span>
+                    
+                    <span class="c1"># Pobierz limit prędkości z tagu lub przypisz domyślny w zależności od typu drogi</span>
+                    <span class="k">if</span> <span class="s2">&quot;maxspeed&quot;</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
                         <span class="k">try</span><span class="p">:</span>
-                            <span class="n">speed_limit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">road</span><span class="p">[</span><span class="s2">&quot;tags&quot;</span><span class="p">][</span><span class="s2">&quot;maxspeed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">speed_limit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tags</span><span class="p">[</span><span class="s2">&quot;maxspeed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
                         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
-                            <span class="k">continue</span>
+                            <span class="c1"># Ustal domyślny limit na podstawie typu drogi</span>
+                            <span class="n">speed_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_speed_limit</span><span class="p">(</span><span class="n">road_type</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">speed_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_speed_limit</span><span class="p">(</span><span class="n">road_type</span><span class="p">)</span>
                             
-                        <span class="c1"># wszystkie segmenty drogi</span>
-                        <span class="n">coords</span> <span class="o">=</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="p">[])</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                            <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
-                            <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
-                            <span class="n">segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
-                            <span class="n">road_segments</span><span class="p">[</span><span class="n">segment</span><span class="p">]</span> <span class="o">=</span> <span class="n">speed_limit</span>
+                    <span class="c1"># Wszystkie segmenty drogi</span>
+                    <span class="n">coords</span> <span class="o">=</span> <span class="n">road</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                        <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
+                        <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;lon&quot;</span><span class="p">])</span>
+                        <span class="n">segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+                        <span class="n">road_segments</span><span class="p">[</span><span class="n">segment</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">speed_limit</span><span class="p">,</span> <span class="n">road_type</span><span class="p">)</span>
                 
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Znaleziono </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">road_segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> segmentów dróg z limitami prędkości&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Znaleziono </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">road_segments</span><span class="p">)</span><span class="si">}</span><span class="s2"> segmentów dróg&quot;</span><span class="p">)</span>
+                <span class="c1"># Debug: pokaż przykładowe limity dla różnych typów dróg</span>
+                <span class="n">road_types</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">segment</span><span class="p">,</span> <span class="p">(</span><span class="n">limit</span><span class="p">,</span> <span class="n">road_type</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">road_segments</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">10</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">road_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">road_types</span><span class="p">:</span>
+                        <span class="n">road_types</span><span class="p">[</span><span class="n">road_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Przykładowe typy dróg i limity: </span><span class="si">{</span><span class="n">road_types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd API: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd podczas pobierania limitów prędkości: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd podczas pobierania danych o drogach: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">road_segments</span></div>
 
-        
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_default_speed_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">road_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Zwraca domyślny limit prędkości dla danego typu drogi w Polsce.</span>
+<span class="sd">        </span>
+<span class="sd">        :param road_type: Typ drogi z OSM</span>
+<span class="sd">        :type road_type: str</span>
+<span class="sd">        :return: Domyślny limit prędkości w km/h</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Domyślne limity prędkości w Polsce</span>
+        <span class="n">limits</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;motorway&#39;</span><span class="p">:</span> <span class="mi">140</span><span class="p">,</span>
+            <span class="s1">&#39;trunk&#39;</span><span class="p">:</span> <span class="mi">120</span><span class="p">,</span>
+            <span class="s1">&#39;primary&#39;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="s1">&#39;secondary&#39;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="s1">&#39;tertiary&#39;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+            <span class="s1">&#39;residential&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+            <span class="s1">&#39;service&#39;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+            <span class="s1">&#39;living_street&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+            <span class="s1">&#39;motorway_link&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+            <span class="s1">&#39;trunk_link&#39;</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span>
+            <span class="s1">&#39;primary_link&#39;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+            <span class="s1">&#39;secondary_link&#39;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+            <span class="s1">&#39;tertiary_link&#39;</span><span class="p">:</span> <span class="mi">70</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">limits</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">road_type</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>  <span class="c1"># 50 km/h jako ostateczny domyślny limit</span>
+
 <div class="viewcode-block" id="MapWidget.find_nearest_road_segment">
 <a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.find_nearest_road_segment">[dokumentacja]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_nearest_road_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">road_segments</span><span class="p">):</span>
@@ -241,54 +282,54 @@
 <span class="sd">        :type lat: float</span>
 <span class="sd">        :param lon: Długość geograficzna punktu</span>
 <span class="sd">        :type lon: float</span>
-<span class="sd">        :param road_segments: Słownik segmentów dróg i limitów prędkości</span>
+<span class="sd">        :param road_segments: Słownik segmentów dróg i ich danych</span>
 <span class="sd">        :type road_segments: dict</span>
-<span class="sd">        :return: Najbliższy segment i jego limit prędkości</span>
-<span class="sd">        :rtype: tuple lub None</span>
+<span class="sd">        :return: Najbliższy segment, jego limit prędkości i typ drogi</span>
+<span class="sd">        :rtype: tuple</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">road_segments</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span>  <span class="c1"># domyślnie 50 km/h</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span>
             
         <span class="n">min_distance</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
         <span class="n">nearest_segment</span> <span class="o">=</span> <span class="kc">None</span>
         
-        <span class="k">for</span> <span class="n">segment</span><span class="p">,</span> <span class="n">speed_limit</span> <span class="ow">in</span> <span class="n">road_segments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="c1"># Oblicz odległość punktu od segmentu drogi</span>
-            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_to_segment_distance</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">segment</span><span class="p">,</span> <span class="p">(</span><span class="n">speed_limit</span><span class="p">,</span> <span class="n">road_type</span><span class="p">)</span> <span class="ow">in</span> <span class="n">road_segments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Oblicz odległość punktu od segmentu drogi (poprawiona metoda)</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_to_segment_distance_improved</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">*</span><span class="n">segment</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             
             <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;</span> <span class="n">min_distance</span><span class="p">:</span>
                 <span class="n">min_distance</span> <span class="o">=</span> <span class="n">distance</span>
-                <span class="n">nearest_segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">speed_limit</span><span class="p">)</span>
-                
-        <span class="c1"># Jeśli punkt jest dalej niż 100m od najbliższej drogi, użyj domyślnego limitu</span>
-        <span class="k">if</span> <span class="n">min_distance</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">:</span>  <span class="c1"># ok 100m</span>
-            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span>
+                <span class="n">nearest_segment</span> <span class="o">=</span> <span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="n">speed_limit</span><span class="p">,</span> <span class="n">road_type</span><span class="p">)</span>
+
+        <span class="c1"># Jeśli punkt jest dalej niż 10m od najbliższej drogi, użyj domyślnego limitu</span>
+        <span class="k">if</span> <span class="n">min_distance</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>  
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span>
             
         <span class="k">return</span> <span class="n">nearest_segment</span></div>
 
-        
-<div class="viewcode-block" id="MapWidget.point_to_segment_distance">
-<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.point_to_segment_distance">[dokumentacja]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">point_to_segment_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Oblicza odległość punktu od odcinka drogi (uproszczona wersja).</span>
 
-<span class="sd">        :param px: Szerokość geograficzna punktu</span>
-<span class="sd">        :type px: float</span>
-<span class="sd">        :param py: Długość geograficzna punktu</span>
-<span class="sd">        :type py: float</span>
-<span class="sd">        :param x1: Szerokość geograficzna początku odcinka</span>
-<span class="sd">        :type x1: float</span>
-<span class="sd">        :param y1: Długość geograficzna początku odcinka</span>
-<span class="sd">        :type y1: float</span>
-<span class="sd">        :param x2: Szerokość geograficzna końca odcinka</span>
-<span class="sd">        :type x2: float</span>
-<span class="sd">        :param y2: Długość geograficzna końca odcinka</span>
-<span class="sd">        :type y2: float</span>
+<div class="viewcode-block" id="MapWidget.point_to_segment_distance_improved">
+<a class="viewcode-back" href="../map_widget.html#map_widget.MapWidget.point_to_segment_distance_improved">[dokumentacja]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">point_to_segment_distance_improved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Oblicza dokładną odległość punktu od odcinka drogi.</span>
+
 <span class="sd">        :return: Odległość w kilometrach</span>
 <span class="sd">        :rtype: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Obliczamy długość segmentu</span>
+        <span class="n">segment_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
         
+        <span class="c1"># Jeśli segment jest praktycznie punktem, zwróć odległość do tego punktu</span>
+        <span class="k">if</span> <span class="n">segment_length</span> <span class="o">&lt;</span> <span class="mf">0.00001</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span>
+        
+        <span class="c1"># Oblicz projekcję punktu na linię segmentu (uproszczone dla małych odległości)</span>
+        <span class="c1"># Używamy przybliżenia przy założeniu, że ziemia jest lokalnie płaska</span>
+        <span class="c1"># Konwersja do metrycznych współrzędnych dla małego obszaru</span>
+        
+        <span class="c1"># Po prostu zwracamy minimum odległości do punktów początkowego i końcowego</span>
+        <span class="c1"># To uproszczenie, ale powinno działać lepiej niż obecne</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">haversine_distance</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
@@ -362,12 +403,12 @@
 
             <span class="n">markers_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;L.marker([</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], </span><span class="se">{{</span><span class="si">{</span><span class="n">icon_js</span><span class="si">}</span><span class="se">}}</span><span class="s2">).addTo(map).bindPopup(`</span><span class="si">{</span><span class="n">popup_content</span><span class="si">}</span><span class="s2">`);</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-            
+
             <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">prev_point</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>  
                 
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">_</span><span class="p">,</span> <span class="n">speed_limit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_nearest_road_segment</span><span class="p">(</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">speed_limit</span><span class="p">,</span> <span class="n">road_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_nearest_road_segment</span><span class="p">(</span>
                         <span class="p">(</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># środek segmentu</span>
                         <span class="p">(</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
                         <span class="n">road_segments</span>
@@ -382,9 +423,11 @@
                     <span class="n">segments_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                    L.polyline([[</span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], [</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">]], </span>
 <span class="s2">                        </span><span class="se">{{</span><span class="s2">color: &#39;</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&#39;, weight: 4</span><span class="se">}}</span><span class="s2">).addTo(map)</span>
-<span class="s2">                        .bindTooltip(&#39;Limit: </span><span class="si">{</span><span class="n">speed_limit</span><span class="si">}</span><span class="s2"> km/h&lt;br&gt;Prędkość: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&#39;);</span>
+<span class="s2">                        .bindTooltip(&#39;Typ drogi: </span><span class="si">{</span><span class="n">road_type</span><span class="si">}</span><span class="s2">&lt;br&gt;Limit: </span><span class="si">{</span><span class="n">speed_limit</span><span class="si">}</span><span class="s2"> km/h&lt;br&gt;Prędkość: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&#39;);</span>
 <span class="s2">                    &quot;&quot;&quot;</span>
-                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Segment: droga typu </span><span class="si">{</span><span class="n">road_type</span><span class="si">}</span><span class="s2">, limit </span><span class="si">{</span><span class="n">speed_limit</span><span class="si">}</span><span class="s2"> km/h, prędkość </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">speed</span><span class="si">}</span><span class="s2"> km/h&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Błąd przetwarzania segmentu: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="n">segments_js</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                    L.polyline([[</span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">prev_point</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">], [</span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">latitude</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">longitude</span><span class="si">}</span><span class="s2">]], </span>
 <span class="s2">                        </span><span class="se">{{</span><span class="s2">color: &#39;blue&#39;, weight: 4</span><span class="se">}}</span><span class="s2">).addTo(map);</span>

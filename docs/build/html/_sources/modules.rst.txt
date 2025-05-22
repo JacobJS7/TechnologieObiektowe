@@ -8,3 +8,4 @@ src
    main
    map_widget
    plot_generator
+   road_info_service

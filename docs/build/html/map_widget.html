@@ -53,16 +53,13 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">map_widget module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#map_widget.MapWidget"><code class="docutils literal notranslate"><span class="pre">MapWidget</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.load_map"><code class="docutils literal notranslate"><span class="pre">MapWidget.load_map()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.get_route_speed_limits"><code class="docutils literal notranslate"><span class="pre">MapWidget.get_route_speed_limits()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.find_nearest_road_segment"><code class="docutils literal notranslate"><span class="pre">MapWidget.find_nearest_road_segment()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.point_to_segment_distance_improved"><code class="docutils literal notranslate"><span class="pre">MapWidget.point_to_segment_distance_improved()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.haversine_distance"><code class="docutils literal notranslate"><span class="pre">MapWidget.haversine_distance()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#map_widget.MapWidget.load_points"><code class="docutils literal notranslate"><span class="pre">MapWidget.load_points()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plot_generator.html">plot_generator module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="road_info_service.html">road_info_service module</a></li>
 </ul>
 </li>
 </ul>
@@ -106,80 +103,6 @@ na podstawie limitów prędkości pobranych z API OpenStreetMap.</p>
 <dt class="sig sig-object py" id="map_widget.MapWidget.load_map">
 <span class="sig-name descname"><span class="pre">load_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.load_map"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.load_map" title="Link to this definition"></a></dt>
 <dd><p>Ładuje pustą mapę bazową.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="map_widget.MapWidget.get_route_speed_limits">
-<span class="sig-name descname"><span class="pre">get_route_speed_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.get_route_speed_limits"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.get_route_speed_limits" title="Link to this definition"></a></dt>
-<dd><p>Pobiera limity prędkości dla całej trasy za jednym razem z Overpass API.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parametry<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>points</strong> (<em>list</em>) – Lista punktów GPS</p>
-</dd>
-<dt class="field-even">Zwraca<span class="colon">:</span></dt>
-<dd class="field-even"><p>Słownik segmentów dróg i ich limitów prędkości oraz typy dróg</p>
-</dd>
-<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="map_widget.MapWidget.find_nearest_road_segment">
-<span class="sig-name descname"><span class="pre">find_nearest_road_segment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">road_segments</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.find_nearest_road_segment"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.find_nearest_road_segment" title="Link to this definition"></a></dt>
-<dd><p>Znajduje najbliższy segment drogi dla danego punktu.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parametry<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lat</strong> (<em>float</em>) – Szerokość geograficzna punktu</p></li>
-<li><p><strong>lon</strong> (<em>float</em>) – Długość geograficzna punktu</p></li>
-<li><p><strong>road_segments</strong> (<em>dict</em>) – Słownik segmentów dróg i ich danych</p></li>
-</ul>
-</dd>
-<dt class="field-even">Zwraca<span class="colon">:</span></dt>
-<dd class="field-even"><p>Najbliższy segment, jego limit prędkości i typ drogi</p>
-</dd>
-<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="map_widget.MapWidget.point_to_segment_distance_improved">
-<span class="sig-name descname"><span class="pre">point_to_segment_distance_improved</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">px</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">py</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.point_to_segment_distance_improved"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.point_to_segment_distance_improved" title="Link to this definition"></a></dt>
-<dd><p>Oblicza dokładną odległość punktu od odcinka drogi.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Zwraca<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Odległość w kilometrach</p>
-</dd>
-<dt class="field-even">Typ zwracany<span class="colon">:</span></dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="map_widget.MapWidget.haversine_distance">
-<span class="sig-name descname"><span class="pre">haversine_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/map_widget.html#MapWidget.haversine_distance"><span class="viewcode-link"><span class="pre">[źródło]</span></span></a><a class="headerlink" href="#map_widget.MapWidget.haversine_distance" title="Link to this definition"></a></dt>
-<dd><p>Oblicza odległość między dwoma punktami geograficznymi w kilometrach.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parametry<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>lat1</strong> (<em>float</em>) – Szerokość geograficzna pierwszego punktu</p></li>
-<li><p><strong>lon1</strong> (<em>float</em>) – Długość geograficzna pierwszego punktu</p></li>
-<li><p><strong>lat2</strong> (<em>float</em>) – Szerokość geograficzna drugiego punktu</p></li>
-<li><p><strong>lon2</strong> (<em>float</em>) – Długość geograficzna drugiego punktu</p></li>
-</ul>
-</dd>
-<dt class="field-even">Zwraca<span class="colon">:</span></dt>
-<dd class="field-even"><p>Odległość w kilometrach</p>
-</dd>
-<dt class="field-odd">Typ zwracany<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">

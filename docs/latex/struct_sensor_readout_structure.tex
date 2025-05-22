@@ -1,0 +1,64 @@
+\doxysection{Sensor\+Readout\+Structure Struct Reference}
+\hypertarget{struct_sensor_readout_structure}{}\label{struct_sensor_readout_structure}\index{SensorReadoutStructure@{SensorReadoutStructure}}
+
+
+Struktura przechowująca odczyty sensorów GPS i inne dane.  
+
+
+
+
+{\ttfamily \#include $<$display\+\_\+drawings.\+h$>$}
+
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{struct_sensor_readout_structure_aa69cf010691968737ce32c53db1ff45f}\label{struct_sensor_readout_structure_aa69cf010691968737ce32c53db1ff45f} 
+uint8\+\_\+t {\bfseries hour}
+\begin{DoxyCompactList}\small\item\em Godzina z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a7b4ee6556abd8b765367e1112efb730a}\label{struct_sensor_readout_structure_a7b4ee6556abd8b765367e1112efb730a} 
+uint8\+\_\+t {\bfseries minute}
+\begin{DoxyCompactList}\small\item\em Minuta z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a201bb9b267d6a16a21bfc62d0b0095e6}\label{struct_sensor_readout_structure_a201bb9b267d6a16a21bfc62d0b0095e6} 
+uint8\+\_\+t {\bfseries second}
+\begin{DoxyCompactList}\small\item\em Sekunda z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_aab91d06d635f75e6ec2c813bed4de2e9}\label{struct_sensor_readout_structure_aab91d06d635f75e6ec2c813bed4de2e9} 
+uint8\+\_\+t {\bfseries day}
+\begin{DoxyCompactList}\small\item\em Dzień z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a30b85df2d32ee07f499d52d404929c0a}\label{struct_sensor_readout_structure_a30b85df2d32ee07f499d52d404929c0a} 
+uint8\+\_\+t {\bfseries month}
+\begin{DoxyCompactList}\small\item\em Miesiąc z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a7c2bf536448406fc0b10479ec41b4019}\label{struct_sensor_readout_structure_a7c2bf536448406fc0b10479ec41b4019} 
+uint16\+\_\+t {\bfseries year}
+\begin{DoxyCompactList}\small\item\em Rok z odczytu GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a56ef2f160564264f38174136f7852c82}\label{struct_sensor_readout_structure_a56ef2f160564264f38174136f7852c82} 
+float {\bfseries latitude}
+\begin{DoxyCompactList}\small\item\em Szerokość geograficzna w stopniach. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a76ab1a2a7babe47f59ecb1aaa2e48b8a}\label{struct_sensor_readout_structure_a76ab1a2a7babe47f59ecb1aaa2e48b8a} 
+float {\bfseries longitude}
+\begin{DoxyCompactList}\small\item\em Długość geograficzna w stopniach. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a682a5fa7bbb93052ac65ff1b5e5d9642}\label{struct_sensor_readout_structure_a682a5fa7bbb93052ac65ff1b5e5d9642} 
+float {\bfseries altitude}
+\begin{DoxyCompactList}\small\item\em Wysokość nad poziomem morza w metrach. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_ac8d5b8339642a58c5591aab9b3a9d4b8}\label{struct_sensor_readout_structure_ac8d5b8339642a58c5591aab9b3a9d4b8} 
+float {\bfseries course}
+\begin{DoxyCompactList}\small\item\em Kierunek ruchu w stopniach. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a132f01bc5e347d106baa7af1fd5688a0}\label{struct_sensor_readout_structure_a132f01bc5e347d106baa7af1fd5688a0} 
+float {\bfseries speed}
+\begin{DoxyCompactList}\small\item\em Prędkość w km/h. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a5801330a3b46374e3e92f99671ad2646}\label{struct_sensor_readout_structure_a5801330a3b46374e3e92f99671ad2646} 
+uint32\+\_\+t {\bfseries satellites}
+\begin{DoxyCompactList}\small\item\em Liczba widocznych satelitów GPS. \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_a33868ddf1ddc3a9bdb355404c50a7a4c}\label{struct_sensor_readout_structure_a33868ddf1ddc3a9bdb355404c50a7a4c} 
+int32\+\_\+t {\bfseries hdop}
+\begin{DoxyCompactList}\small\item\em Horyzontalna dokładność pozycji (HDOP) \end{DoxyCompactList}\item 
+\Hypertarget{struct_sensor_readout_structure_ac2bbbc8b932d47e5b3a7692790a2eb06}\label{struct_sensor_readout_structure_ac2bbbc8b932d47e5b3a7692790a2eb06} 
+uint16\+\_\+t {\bfseries voltage}
+\begin{DoxyCompactList}\small\item\em Napięcie baterii w mV. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Struktura przechowująca odczyty sensorów GPS i inne dane. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+LENOVO/\+Documents/\+Platform\+IO/\+Projects/\+Transport\+Tracker/src/\mbox{\hyperlink{display__drawings_8h}{display\+\_\+drawings.\+h}}\end{DoxyCompactItemize}

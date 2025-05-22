@@ -1,29 +1,87 @@
+/**
+ * @file main.cpp
+ * @brief Program główny dla urządzenia TransportTracker - rejestratora GPS
+ * @author Jakub Szczur
+ * @date 21.05.2025
+ * 
+ * TransportTracker to urządzenie zapisujące pozycję GPS w regularnych odstępach czasu,
+ * wyposażone w wyświetlacz OLED pokazujący aktualne dane.
+ */
+
 #include <TinyGPS++.h>
 #include <Wire.h>
 #include <SoftwareSerial.h>
 #include "U8g2lib.h"
 #include "display_drawings.h"
 
-#define Battery_Pin 4
-#define GPS_TX 6
-#define OpenLog_RX 7
-#define Up_Button 3
-#define Down_Button 2
-//SDA 8
-//SCL 9
+/**
+ * @defgroup Pin_Definitions Definicje pinów
+ * @{
+ */
+#define Battery_Pin 4  ///< Pin do odczytu napięcia baterii
+#define GPS_TX 6       ///< Pin odbierający dane z modułu GPS
+#define OpenLog_RX 7   ///< Pin wysyłający dane do modułu OpenLog
+#define Up_Button 3    ///< Pin przycisku w górę (zmiana interwału)
+#define Down_Button 2  ///< Pin przycisku w dół (potwierdzenie wyboru)
+//SDA 8              ///< Pin danych I2C dla wyświetlacza
+//SCL 9              ///< Pin zegara I2C dla wyświetlacza
+/** @} */
 
+/**
+ * @brief Obiekt do przetwarzania danych GPS
+ */
 TinyGPSPlus gps;
+
+/**
+ * @brief Port szeregowy do komunikacji z modułem GPS (tylko RX)
+ */
 SoftwareSerial gpsSerial(GPS_TX, -1); //6 -> TX only
+
+/**
+ * @brief Port szeregowy do komunikacji z modułem OpenLog (tylko TX)
+ */
 SoftwareSerial openLogSerial(-2, OpenLog_RX); //7 -> RX only
+
+/**
+ * @brief Obiekt do obsługi wyświetlacza OLED 128x64 na I2C
+ */
 U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE, /* clock=*/ 9, /* data=*/ 8);
+
+/**
+ * @brief Struktura przechowująca aktualne odczyty z sensorów
+ */
 SensorReadoutStructure SensorReadout;
 
+/**
+ * @brief Dostępne opcje interwału zapisu danych (w milisekundach)
+ */
 const uint32_t intervalOptions[4] = {5000, 15000, 30000, 60000};
+
+/**
+ * @brief Indeks aktualnie wybranego interwału zapisu
+ */
 uint8_t selectedInterval = 0;
+
+/**
+ * @brief Aktualnie wybrany interwał zapisu w milisekundach
+ */
 uint32_t loggingInterval = 5000; // Default 5s
+
+/**
+ * @brief Timestamp ostatniego zapisu danych
+ */
 uint32_t lastLogTime = 0;
+
+/**
+ * @brief Flaga wskazująca czy sygnał GPS został nawiązany
+ */
 bool gpsSignalAcquired = false;
 
+/**
+ * @brief Wypisuje dane z sensorów na port szeregowy
+ * 
+ * @param SensorReadout Struktura z aktualnymi odczytami sensorów
+ */
 void PrintData(struct SensorReadoutStructure SensorReadout){
   Serial.printf("%02d:%02d:%02d;", SensorReadout.hour, SensorReadout.minute, SensorReadout.second);
   Serial.printf("%02d/%02d/%04d;", SensorReadout.day, SensorReadout.month, SensorReadout.year);
@@ -34,6 +92,11 @@ void PrintData(struct SensorReadoutStructure SensorReadout){
   Serial.printf("\n");
 }
 
+/**
+ * @brief Wypisuje dane z sensorów do modułu OpenLog
+ * 
+ * @param SensorReadout Struktura z aktualnymi odczytami sensorów
+ */
 void PrintDataToOpenLog(struct SensorReadoutStructure SensorReadout){
   openLogSerial.printf("%02d:%02d:%02d;", SensorReadout.hour, SensorReadout.minute, SensorReadout.second);
   openLogSerial.printf("%02d/%02d/%04d;", SensorReadout.day, SensorReadout.month, SensorReadout.year);
@@ -44,6 +107,14 @@ void PrintDataToOpenLog(struct SensorReadoutStructure SensorReadout){
   openLogSerial.printf("\n");
 }
 
+/**
+ * @brief Obsługuje wybór interwału zapisu danych przez użytkownika
+ * 
+ * Funkcja wyświetla menu wyboru interwału i obsługuje przyciski użytkownika
+ * do zmiany i potwierdzenia wyboru. Zawiera debouncing dla przycisków.
+ * 
+ * @return true gdy interwał został wybrany
+ */
 bool selectInterval() {
   bool intervalSelected = false;
   
@@ -103,6 +174,12 @@ bool selectInterval() {
   return true;
 }
 
+/**
+ * @brief Funkcja inicjalizacyjna wywoływana raz przy starcie urządzenia
+ * 
+ * Inicjalizuje porty szeregowe, wyświetlacz, piny, oraz przeprowadza
+ * wybór interwału zapisu danych przez użytkownika.
+ */
 void setup(){
   Serial.begin(115200);
   Serial.println("Startujemy...");
@@ -137,6 +214,13 @@ void setup(){
   lastLogTime = millis(); 
 }
 
+/**
+ * @brief Główna pętla programu
+ * 
+ * Odbiera dane GPS, przetwarza je, oraz w ustawionych odstępach czasu
+ * zapisuje odczyty do pamięci i wyświetla na ekranie.
+ * Gdy sygnał GPS jest niedostępny, wyświetla alert.
+ */
 void loop(){
   if(gpsSerial.available() <= 0 && !gpsSignalAcquired){
     displayAlert(u8g2);

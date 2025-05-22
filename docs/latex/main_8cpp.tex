@@ -1,0 +1,151 @@
+\doxysection{C\+:/\+Users/\+LENOVO/\+Documents/\+Platform\+IO/\+Projects/\+Transport\+Tracker/src/main.cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/main.cpp@{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/main.cpp}}
+
+
+Program główny dla urządzenia Transport\+Tracker -\/ rejestratora GPS.  
+
+
+{\ttfamily \#include $<$Tiny\+GPS++.\+h$>$}\newline
+{\ttfamily \#include $<$Wire.\+h$>$}\newline
+{\ttfamily \#include $<$Software\+Serial.\+h$>$}\newline
+{\ttfamily \#include "{}U8g2lib.\+h"{}}\newline
+{\ttfamily \#include "{}display\+\_\+drawings.\+h"{}}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define {\bfseries Battery\+\_\+\+Pin}~4
+\begin{DoxyCompactList}\small\item\em Pin do odczytu napięcia baterii. \end{DoxyCompactList}\item 
+\#define {\bfseries GPS\+\_\+\+TX}~6
+\begin{DoxyCompactList}\small\item\em Pin odbierający dane z modułu GPS. \end{DoxyCompactList}\item 
+\#define {\bfseries Open\+Log\+\_\+\+RX}~7
+\begin{DoxyCompactList}\small\item\em Pin wysyłający dane do modułu Open\+Log. \end{DoxyCompactList}\item 
+\#define {\bfseries Up\+\_\+\+Button}~3
+\begin{DoxyCompactList}\small\item\em Pin przycisku w górę (zmiana interwału) \end{DoxyCompactList}\item 
+\#define {\bfseries Down\+\_\+\+Button}~2
+\begin{DoxyCompactList}\small\item\em Pin przycisku w dół (potwierdzenie wyboru) \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_af8189745ef3ab6a256395a11c85a0d7c}\label{main_8cpp_af8189745ef3ab6a256395a11c85a0d7c} 
+Software\+Serial {\bfseries gps\+Serial} (\mbox{\hyperlink{group___pin___definitions_ga05b958741e002c6dd8f8af174726665e}{GPS\+\_\+\+TX}}, -\/1)
+\begin{DoxyCompactList}\small\item\em Port szeregowy do komunikacji z modułem GPS (tylko RX) \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a67096fa2da2eb01ba1d163bb2dd6591a}\label{main_8cpp_a67096fa2da2eb01ba1d163bb2dd6591a} 
+Software\+Serial {\bfseries open\+Log\+Serial} (-\/2, \mbox{\hyperlink{group___pin___definitions_gac2fabfa4fe05c294cedad7407ba38aaf}{Open\+Log\+\_\+\+RX}})
+\begin{DoxyCompactList}\small\item\em Port szeregowy do komunikacji z modułem Open\+Log (tylko TX) \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}\label{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db} 
+U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C {\bfseries u8g2} (U8\+G2\+\_\+\+R0, U8\+X8\+\_\+\+PIN\+\_\+\+NONE, 9, 8)
+\begin{DoxyCompactList}\small\item\em Obiekt do obsługi wyświetlacza OLED 128x64 na I2C. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_aa6c39156bfbf5dc8f2c9a46606d2ee88}{Print\+Data}} (struct \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}} \mbox{\hyperlink{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c}{Sensor\+Readout}})
+\begin{DoxyCompactList}\small\item\em Wypisuje dane z sensorów na port szeregowy. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_a31ba0a074053933b3ed4eec4f5fbbc6c}{Print\+Data\+To\+Open\+Log}} (struct \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}} \mbox{\hyperlink{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c}{Sensor\+Readout}})
+\begin{DoxyCompactList}\small\item\em Wypisuje dane z sensorów do modułu Open\+Log. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{main_8cpp_a151611262bf5942614fc4a8b9454af7f}{select\+Interval}} ()
+\begin{DoxyCompactList}\small\item\em Obsługuje wybór interwału zapisu danych przez użytkownika. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}{setup}} ()
+\begin{DoxyCompactList}\small\item\em Funkcja inicjalizacyjna wywoływana raz przy starcie urządzenia. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{main_8cpp_afe461d27b9c48d5921c00d521181f12f}{loop}} ()
+\begin{DoxyCompactList}\small\item\em Główna pętla programu. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_a169c53997a7da1d0fb99aec1b4675ce8}\label{main_8cpp_a169c53997a7da1d0fb99aec1b4675ce8} 
+Tiny\+GPSPlus {\bfseries gps}
+\begin{DoxyCompactList}\small\item\em Obiekt do przetwarzania danych GPS. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c}\label{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c} 
+\mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}} {\bfseries Sensor\+Readout}
+\begin{DoxyCompactList}\small\item\em Struktura przechowująca aktualne odczyty z sensorów. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_ac5ffefb5d38b395e5e9f0f45f84d3e5c}\label{main_8cpp_ac5ffefb5d38b395e5e9f0f45f84d3e5c} 
+const uint32\+\_\+t {\bfseries interval\+Options} \mbox{[}4\mbox{]} = \{5000, 15000, 30000, 60000\}
+\begin{DoxyCompactList}\small\item\em Dostępne opcje interwału zapisu danych (w milisekundach) \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a9462758201f02173b9e3b058f650515e}\label{main_8cpp_a9462758201f02173b9e3b058f650515e} 
+uint8\+\_\+t {\bfseries selected\+Interval} = 0
+\begin{DoxyCompactList}\small\item\em Indeks aktualnie wybranego interwału zapisu. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_ab04011cbffc10838db91d790bf8ca9b6}\label{main_8cpp_ab04011cbffc10838db91d790bf8ca9b6} 
+uint32\+\_\+t {\bfseries logging\+Interval} = 5000
+\begin{DoxyCompactList}\small\item\em Aktualnie wybrany interwał zapisu w milisekundach. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a56db8e44fddc7de8bf76a74722a75af8}\label{main_8cpp_a56db8e44fddc7de8bf76a74722a75af8} 
+uint32\+\_\+t {\bfseries last\+Log\+Time} = 0
+\begin{DoxyCompactList}\small\item\em Timestamp ostatniego zapisu danych. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a492f02238dabb562cdcc611701531317}\label{main_8cpp_a492f02238dabb562cdcc611701531317} 
+bool {\bfseries gps\+Signal\+Acquired} = false
+\begin{DoxyCompactList}\small\item\em Flaga wskazująca czy sygnał GPS został nawiązany. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Program główny dla urządzenia Transport\+Tracker -\/ rejestratora GPS. 
+
+\begin{DoxyAuthor}{Author}
+Jakub Szczur 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+21.\+05.\+2025
+\end{DoxyDate}
+Transport\+Tracker to urządzenie zapisujące pozycję GPS w regularnych odstępach czasu, wyposażone w wyświetlacz OLED pokazujący aktualne dane. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8cpp_afe461d27b9c48d5921c00d521181f12f}\index{main.cpp@{main.cpp}!loop@{loop}}
+\index{loop@{loop}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{loop()}{loop()}}
+{\footnotesize\ttfamily \label{main_8cpp_afe461d27b9c48d5921c00d521181f12f} 
+void loop (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Główna pętla programu. 
+
+Odbiera dane GPS, przetwarza je, oraz w ustawionych odstępach czasu zapisuje odczyty do pamięci i wyświetla na ekranie. Gdy sygnał GPS jest niedostępny, wyświetla alert. \Hypertarget{main_8cpp_aa6c39156bfbf5dc8f2c9a46606d2ee88}\index{main.cpp@{main.cpp}!PrintData@{PrintData}}
+\index{PrintData@{PrintData}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{PrintData()}{PrintData()}}
+{\footnotesize\ttfamily \label{main_8cpp_aa6c39156bfbf5dc8f2c9a46606d2ee88} 
+void Print\+Data (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}}}]{Sensor\+Readout}{}\end{DoxyParamCaption})}
+
+
+
+Wypisuje dane z sensorów na port szeregowy. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Sensor\+Readout} & Struktura z aktualnymi odczytami sensorów \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8cpp_a31ba0a074053933b3ed4eec4f5fbbc6c}\index{main.cpp@{main.cpp}!PrintDataToOpenLog@{PrintDataToOpenLog}}
+\index{PrintDataToOpenLog@{PrintDataToOpenLog}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{PrintDataToOpenLog()}{PrintDataToOpenLog()}}
+{\footnotesize\ttfamily \label{main_8cpp_a31ba0a074053933b3ed4eec4f5fbbc6c} 
+void Print\+Data\+To\+Open\+Log (\begin{DoxyParamCaption}\item[{struct \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}}}]{Sensor\+Readout}{}\end{DoxyParamCaption})}
+
+
+
+Wypisuje dane z sensorów do modułu Open\+Log. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Sensor\+Readout} & Struktura z aktualnymi odczytami sensorów \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8cpp_a151611262bf5942614fc4a8b9454af7f}\index{main.cpp@{main.cpp}!selectInterval@{selectInterval}}
+\index{selectInterval@{selectInterval}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{selectInterval()}{selectInterval()}}
+{\footnotesize\ttfamily \label{main_8cpp_a151611262bf5942614fc4a8b9454af7f} 
+bool select\+Interval (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Obsługuje wybór interwału zapisu danych przez użytkownika. 
+
+Funkcja wyświetla menu wyboru interwału i obsługuje przyciski użytkownika do zmiany i potwierdzenia wyboru. Zawiera debouncing dla przycisków.
+
+\begin{DoxyReturn}{Returns}
+true gdy interwał został wybrany 
+\end{DoxyReturn}
+\Hypertarget{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}\index{main.cpp@{main.cpp}!setup@{setup}}
+\index{setup@{setup}!main.cpp@{main.cpp}}
+\doxysubsubsection{\texorpdfstring{setup()}{setup()}}
+{\footnotesize\ttfamily \label{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d} 
+void setup (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Funkcja inicjalizacyjna wywoływana raz przy starcie urządzenia. 
+
+Inicjalizuje porty szeregowe, wyświetlacz, piny, oraz przeprowadza wybór interwału zapisu danych przez użytkownika. 

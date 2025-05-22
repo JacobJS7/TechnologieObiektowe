@@ -1,0 +1,42 @@
+\doxysection{display\+\_\+drawings.\+h}
+\hypertarget{display__drawings_8h_source}{}\label{display__drawings_8h_source}\index{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/display\_drawings.h@{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/display\_drawings.h}}
+\mbox{\hyperlink{display__drawings_8h}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}U8g2lib.h"{}}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ image\_download\_bits[]\ U8X8\_PROGMEM\ =\ \{0x01,0x00,0x03,0x00,0x07,0x00,0x0d,0x00,0x1d,0x00,0x39,0x00,0x79,0x00,0xf1,0x00,0xf1,0x01,0xe1,0x03,0xf1,0x07,0x09,0x00,0x05,0x00,0x03,0x00,0x01,0x00,0x00,0x00\};}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00025\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ image\_download\_1\_bits[]\ U8X8\_PROGMEM\ =\ \{0x00,0x70,0x00,0x50,0x00,0x50,0x00,0x50,0x00,0x57,0x00,0x57,0x00,0x57,0x00,0x57,0x70,0x57,0x70,0x57,0x70,0x57,0x70,0x57,0x77,0x57,0x77,0x57,0x77,0x77,0x00,0x00\};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00032\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ image\_download\_2\_bits[]\ U8X8\_PROGMEM\ =\ \{0xc0,0x01,0x20,0x02,0x90,0x04,0x48,0x09,0x48,0x09,0x88,0x08,0x10,0x04,0x20,0x02,0x20,0x02,0x58,0x0d,0x84,0x10,0x84,0x10,0x02,0x20,0x02,0x20,0x39,0x4e,0xc7,0x71\};}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ image\_download\_3\_bits[]\ U8X8\_PROGMEM\ =\ \{0x00,0x00,0x00,0xf0,0xff,0x7f,0x08,0x00,0x80,0x68,0xdb,0xb6,0x6e,0xdb,0xb6,0x61,0xdb,0xb6,0x61,0xdb,0xb6,0x61,0xdb,0xb6,0x61,0xdb,0xb6,0x61,0xdb,0xb6,0x6e,0xdb,0xb6,0x68,0xdb,0xb6,0x08,0x00,0x80,0xf0,0xff,0x7f,0x00,0x00,0x00,0x00,0x00,0x00\};}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_sensor_readout_structure}{SensorReadoutStructure}}\{}
+\DoxyCodeLine{00046\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_aa69cf010691968737ce32c53db1ff45f}{hour}};\ \ \ \ \ \ }
+\DoxyCodeLine{00047\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a7b4ee6556abd8b765367e1112efb730a}{minute}};\ \ \ \ }
+\DoxyCodeLine{00048\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a201bb9b267d6a16a21bfc62d0b0095e6}{second}};\ \ \ \ }
+\DoxyCodeLine{00049\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_aab91d06d635f75e6ec2c813bed4de2e9}{day}};\ \ \ \ \ \ \ }
+\DoxyCodeLine{00050\ \ \ \ \ uint8\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a30b85df2d32ee07f499d52d404929c0a}{month}};\ \ \ \ \ }
+\DoxyCodeLine{00051\ \ \ \ \ uint16\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a7c2bf536448406fc0b10479ec41b4019}{year}};\ \ \ \ \ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_sensor_readout_structure_a56ef2f160564264f38174136f7852c82}{latitude}};\ \ \ \ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_sensor_readout_structure_a76ab1a2a7babe47f59ecb1aaa2e48b8a}{longitude}};\ \ \ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_sensor_readout_structure_a682a5fa7bbb93052ac65ff1b5e5d9642}{altitude}};\ \ \ \ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_sensor_readout_structure_ac8d5b8339642a58c5591aab9b3a9d4b8}{course}};\ \ \ \ \ \ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{float}\ \mbox{\hyperlink{struct_sensor_readout_structure_a132f01bc5e347d106baa7af1fd5688a0}{speed}};\ \ \ \ \ \ \ }
+\DoxyCodeLine{00057\ \ \ \ \ uint32\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a5801330a3b46374e3e92f99671ad2646}{satellites}};\ }
+\DoxyCodeLine{00058\ \ \ \ \ int32\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_a33868ddf1ddc3a9bdb355404c50a7a4c}{hdop}};\ \ \ \ \ \ }
+\DoxyCodeLine{00059\ \ \ \ \ uint16\_t\ \mbox{\hyperlink{struct_sensor_readout_structure_ac2bbbc8b932d47e5b3a7692790a2eb06}{voltage}};\ \ }
+\DoxyCodeLine{00060\ \};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00072\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{display__drawings_8h_acb9f09f766c917db00050548304de494}{displayAllInfo}}(U8G2\_SSD1306\_128X64\_NONAME\_F\_HW\_I2C\ \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}},\ \mbox{\hyperlink{struct_sensor_readout_structure}{SensorReadoutStructure}}\ \mbox{\hyperlink{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c}{SensorReadout}});}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00077\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ image\_Layer\_3\_bits[];}
+\DoxyCodeLine{00078\ }
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{display__drawings_8h_ace542e386a6a3c28f63d9d5002ea0fbe}{displayAlert}}(U8G2\_SSD1306\_128X64\_NONAME\_F\_HW\_I2C\ \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}});}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00100\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{display__drawings_8h_a09f40bd2948b30e8b90bb761438b77bd}{displayIntervalSelection}}(U8G2\_SSD1306\_128X64\_NONAME\_F\_HW\_I2C\ \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}},\ uint8\_t\ selectedOption);}
+
+\end{DoxyCode}

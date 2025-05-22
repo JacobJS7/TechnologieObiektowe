@@ -1,0 +1,91 @@
+\doxysection{C\+:/\+Users/\+LENOVO/\+Documents/\+Platform\+IO/\+Projects/\+Transport\+Tracker/src/display\+\_\+drawings.h File Reference}
+\hypertarget{display__drawings_8h}{}\label{display__drawings_8h}\index{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/display\_drawings.h@{C:/Users/LENOVO/Documents/PlatformIO/Projects/TransportTracker/src/display\_drawings.h}}
+
+
+Biblioteka do obsługi wyświetlacza urządzenia Transport\+Tracker.  
+
+
+{\ttfamily \#include "{}U8g2lib.\+h"{}}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}}
+\begin{DoxyCompactList}\small\item\em Struktura przechowująca odczyty sensorów GPS i inne dane. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{display__drawings_8h_acb9f09f766c917db00050548304de494}{display\+All\+Info}} (U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}}, \mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}} \mbox{\hyperlink{main_8cpp_a17d1f0cfa63695d5cd2b47a30a21906c}{Sensor\+Readout}})
+\begin{DoxyCompactList}\small\item\em Wyświetla wszystkie informacje na ekranie OLED. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display__drawings_8h_ace542e386a6a3c28f63d9d5002ea0fbe}{display\+Alert}} (U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}})
+\begin{DoxyCompactList}\small\item\em Wyświetla komunikat o oczekiwaniu na sygnał GPS. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{display__drawings_8h_a09f40bd2948b30e8b90bb761438b77bd}{display\+Interval\+Selection}} (U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C \mbox{\hyperlink{main_8cpp_a6c8e9cfb2de6d8f49c3d2bbc379365db}{u8g2}}, uint8\+\_\+t selected\+Option)
+\begin{DoxyCompactList}\small\item\em Wyświetla menu wyboru interwału zapisu. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Biblioteka do obsługi wyświetlacza urządzenia Transport\+Tracker. 
+
+\begin{DoxyAuthor}{Author}
+Jakub Szczur 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+21.\+05.\+2025
+\end{DoxyDate}
+Plik zawiera funkcje i struktury do rysowania różnych interfejsów użytkownika na wyświetlaczu OLED SSD1306 128x64. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{display__drawings_8h_ace542e386a6a3c28f63d9d5002ea0fbe}\index{display\_drawings.h@{display\_drawings.h}!displayAlert@{displayAlert}}
+\index{displayAlert@{displayAlert}!display\_drawings.h@{display\_drawings.h}}
+\doxysubsubsection{\texorpdfstring{displayAlert()}{displayAlert()}}
+{\footnotesize\ttfamily \label{display__drawings_8h_ace542e386a6a3c28f63d9d5002ea0fbe} 
+void display\+Alert (\begin{DoxyParamCaption}\item[{U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C}]{u8g2}{}\end{DoxyParamCaption})}
+
+
+
+Wyświetla komunikat o oczekiwaniu na sygnał GPS. 
+
+Funkcja pokazuje ekran alertu z tekstem "{}\+Oczekuje GPS..."{} oraz grafiką satelity. Wyświetla się gdy urządzenie nie ma jeszcze ustalonej pozycji GPS.
+
+
+\begin{DoxyParams}{Parameters}
+{\em u8g2} & Obiekt wyświetlacza OLED \\
+\hline
+\end{DoxyParams}
+\Hypertarget{display__drawings_8h_acb9f09f766c917db00050548304de494}\index{display\_drawings.h@{display\_drawings.h}!displayAllInfo@{displayAllInfo}}
+\index{displayAllInfo@{displayAllInfo}!display\_drawings.h@{display\_drawings.h}}
+\doxysubsubsection{\texorpdfstring{displayAllInfo()}{displayAllInfo()}}
+{\footnotesize\ttfamily \label{display__drawings_8h_acb9f09f766c917db00050548304de494} 
+void display\+All\+Info (\begin{DoxyParamCaption}\item[{U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C}]{u8g2}{, }\item[{\mbox{\hyperlink{struct_sensor_readout_structure}{Sensor\+Readout\+Structure}}}]{Sensor\+Readout}{}\end{DoxyParamCaption})}
+
+
+
+Wyświetla wszystkie informacje na ekranie OLED. 
+
+Funkcja rysuje kompletny interfejs użytkownika z danymi GPS, czasem, datą, prędkością, kursem, liczba satelitów i napięciem baterii. Wykorzystuje ikony i segmentację ekranu liniami dla lepszej czytelności.
+
+
+\begin{DoxyParams}{Parameters}
+{\em u8g2} & Obiekt wyświetlacza OLED \\
+\hline
+{\em Sensor\+Readout} & Struktura zawierająca dane do wyświetlenia \\
+\hline
+\end{DoxyParams}
+\Hypertarget{display__drawings_8h_a09f40bd2948b30e8b90bb761438b77bd}\index{display\_drawings.h@{display\_drawings.h}!displayIntervalSelection@{displayIntervalSelection}}
+\index{displayIntervalSelection@{displayIntervalSelection}!display\_drawings.h@{display\_drawings.h}}
+\doxysubsubsection{\texorpdfstring{displayIntervalSelection()}{displayIntervalSelection()}}
+{\footnotesize\ttfamily \label{display__drawings_8h_a09f40bd2948b30e8b90bb761438b77bd} 
+void display\+Interval\+Selection (\begin{DoxyParamCaption}\item[{U8\+G2\+\_\+\+SSD1306\+\_\+128\+X64\+\_\+\+NONAME\+\_\+\+F\+\_\+\+HW\+\_\+\+I2C}]{u8g2}{, }\item[{uint8\+\_\+t}]{selected\+Option}{}\end{DoxyParamCaption})}
+
+
+
+Wyświetla menu wyboru interwału zapisu. 
+
+Funkcja rysuje interfejs wyboru interwału logowania danych. Użytkownik może wybierać spośród czterech opcji\+: 5, 15, 30 lub 60 sekund. Aktualnie wybrana opcja jest zaznaczona ramką.
+
+
+\begin{DoxyParams}{Parameters}
+{\em u8g2} & Obiekt wyświetlacza OLED \\
+\hline
+{\em selected\+Option} & Indeks aktualnie wybranej opcji (0-\/3) \\
+\hline
+\end{DoxyParams}
